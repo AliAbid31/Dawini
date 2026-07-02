@@ -4,18 +4,29 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class AuthService {
-  final SupabaseClient _supabase = Supabase.instance.client;
+  SupabaseClient? get _supabase {
+    try {
+      return Supabase.instance.client;
+    } catch (_) {
+      return null;
+    }
+  }
 
-  Stream<AuthState> get authStateListener => _supabase.auth.onAuthStateChange;
+  Stream<AuthState> get authStateListener => _supabase?.auth.onAuthStateChange ?? const Stream.empty();
 
-  User? get currentUser => _supabase.auth.currentUser;
+  User? get currentUser => _supabase?.auth.currentUser;
 
   Future<AuthResponse> signIn({
     required String email,
     required String password,
   }) async {
     try {
-      final AuthResponse response = await _supabase.auth.signInWithPassword(
+      final supabase = _supabase;
+      if (supabase == null) {
+        throw Exception('Supabase is not initialized.');
+      }
+
+      final AuthResponse response = await supabase.auth.signInWithPassword(
         email: email,
         password: password,
       );
@@ -35,7 +46,12 @@ class AuthService {
     required String language,
   }) async {
     try {
-      final AuthResponse response = await _supabase.auth.signUp(
+      final supabase = _supabase;
+      if (supabase == null) {
+        throw Exception('Supabase is not initialized.');
+      }
+
+      final AuthResponse response = await supabase.auth.signUp(
         email: email,
         password: password,
         data: {
@@ -55,10 +71,13 @@ class AuthService {
   // Récupération des données du profil utilisateur depuis la table public.profiles
   Future<Map<String, dynamic>?> getUserProfile() async {
     try {
+      final supabase = _supabase;
       final User? user = currentUser;
       if (user == null) return null;
 
-      final data = await _supabase
+      if (supabase == null) return null;
+
+      final data = await supabase
           .from('profiles')
           .select()
           .eq('id', user.id)
@@ -72,9 +91,10 @@ class AuthService {
   // Mise à jour de la langue préférée à la fois dans la base de données et dans l'application
   Future<void> updateLanguage(BuildContext context, String langCode) async {
     try {
+      final supabase = _supabase;
       final User? user = currentUser;
-      if (user != null) {
-        await _supabase
+      if (user != null && supabase != null) {
+        await supabase
             .from('profiles')
             .update({'preferred_language': langCode})
             .eq('id', user.id);
@@ -90,9 +110,74 @@ class AuthService {
   // Déconnexion complète et fermeture de session
   Future<void> signOut() async {
     try {
-      await _supabase.auth.signOut();
+      final supabase = _supabase;
+      if (supabase != null) {
+        await supabase.auth.signOut();
+      }
     } catch (e) {
       throw Exception('Failed to sign out.');
     }
+  }
+
+  Future<void> syncProfile({
+    required String id,
+    required String email,
+    required String fullName,
+    required String role,
+    required String language,
+    String? phone,
+  }) async {
+    final supabase = _supabase;
+    if (supabase == null) {
+      throw Exception('Supabase is not initialized.');
+    }
+
+    await supabase.from('profiles').upsert({
+      'id': id,
+      'full_name': fullName,
+      'email': email,
+      'role': role,
+      'phone': phone,
+      'preferred_language': language,
+    });
+  }
+
+  Future<void> createPatientDetails({
+    required String profileId,
+    String? location,
+    String? birthDate,
+    String? gender,
+  }) async {
+    final supabase = _supabase;
+    if (supabase == null) {
+      throw Exception('Supabase is not initialized.');
+    }
+
+    await supabase.from('patients').upsert({
+      'profile_id': profileId,
+      'location': location,
+      'birth_date': birthDate,
+      'gender': gender,
+    });
+  }
+
+  Future<void> createPharmacyDetails({
+    required String ownerId,
+    required String name,
+    required String address,
+    required String licenseNumber,
+  }) async {
+    final supabase = _supabase;
+    if (supabase == null) {
+      throw Exception('Supabase is not initialized.');
+    }
+
+    await supabase.from('pharmacies').upsert({
+      'owner_id': ownerId,
+      'name': name,
+      'address': address,
+      'license_number': licenseNumber,
+      'is_verified': false,
+    });
   }
 }

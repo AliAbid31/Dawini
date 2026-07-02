@@ -1,5 +1,7 @@
 class ApiEndpoints {
   static const syncProfile = "/auth/sync-profile";
+  static const createPatientDetails = "/patients/details";
+  static const createPharmacyDetails = "/pharmacies/details";
 
   static const searchMedicine = "/patients/medicines/search";
   static const medicineDetails = "/patients/medicines";

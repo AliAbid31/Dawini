@@ -10,7 +10,13 @@ class PharmacyDashboard extends StatefulWidget {
 }
 
 class _PharmacyDashboardState extends State<PharmacyDashboard> {
-  final SupabaseClient _supabase = Supabase.instance.client;
+  SupabaseClient? get _supabase {
+    try {
+      return Supabase.instance.client;
+    } catch (_) {
+      return null;
+    }
+  }
   bool _isLoading = true;
   int _pendingCount = 0;
   int _lowStockCount = 0;
@@ -22,14 +28,15 @@ class _PharmacyDashboardState extends State<PharmacyDashboard> {
   }
 
   void _fetchDashboardMetrics() async {
-    final user = _supabase.auth.currentUser;
+    final supabase = _supabase;
+    final user = supabase?.auth.currentUser;
     if (user != null) {
       try {
-        final pharmacyRes = await _supabase.from('pharmacies').select('id').eq('owner_id', user.id).single();
+        final pharmacyRes = await supabase!.from('pharmacies').select('id').eq('owner_id', user.id).single();
         final String pharmacyId = pharmacyRes['id'];
 
-        final pendingRes = await _supabase.from('requests').select('id').eq('pharmacy_id', pharmacyId).eq('status', 'PENDING');
-        final lowStockRes = await _supabase.from('inventory').select('id').eq('pharmacy_id', pharmacyId).eq('status', 'WEAK_STOCK');
+        final pendingRes = await supabase.from('requests').select('id').eq('pharmacy_id', pharmacyId).eq('status', 'PENDING');
+        final lowStockRes = await supabase.from('inventory').select('id').eq('pharmacy_id', pharmacyId).eq('status', 'WEAK_STOCK');
 
         setState(() {
           _pendingCount = pendingRes.length;
@@ -39,6 +46,8 @@ class _PharmacyDashboardState extends State<PharmacyDashboard> {
       } catch (e) {
         setState(() => _isLoading = false);
       }
+    } else {
+      setState(() => _isLoading = false);
     }
   }
 

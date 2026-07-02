@@ -34,8 +34,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     final localization = EasyLocalization.of(context);
     final navigator = Navigator.of(context);
-
-    final session = Supabase.instance.client.auth.currentSession;
+    final session = _authService.currentUser == null ? null : Supabase.instance.client.auth.currentSession;
     if (session == null) {
       navigator.pushReplacement(
         MaterialPageRoute(builder: (context) => const LoginScreen()),

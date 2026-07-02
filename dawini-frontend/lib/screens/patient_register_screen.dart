@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import '../../../core/constants/app_colors.dart';
 import 'patient_shell.dart';
 import 'auth_service.dart';
+import '../core/services/location_service.dart';
 
 class PatientRegisterScreen extends StatefulWidget {
   const PatientRegisterScreen({super.key});
@@ -17,11 +18,65 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _birthDateController = TextEditingController();
   final _locationController = TextEditingController();
   final _authService = AuthService();
+  final _locationService = LocationService();
   bool _agreeTerms = false;
   bool _obscurePassword = true;
   bool _isLoading = false;
+  bool _isFetchingLocation = false;
+  String? _selectedGender;
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    _passwordController.dispose();
+    _birthDateController.dispose();
+    _locationController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _pickBirthDate() async {
+    final now = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime(now.year - 18, now.month, now.day),
+      firstDate: DateTime(1900),
+      lastDate: now,
+    );
+
+    if (picked != null) {
+      setState(() {
+        _birthDateController.text = picked.toIso8601String().split('T').first;
+      });
+    }
+  }
+
+  Future<void> _fillCurrentLocation() async {
+    setState(() => _isFetchingLocation = true);
+    try {
+      final locatedAddress = await _locationService.getCurrentAddress();
+      if (!mounted) return;
+      setState(() {
+        _locationController.text = locatedAddress.displayName;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Location detected successfully')),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isFetchingLocation = false);
+      }
+    }
+  }
 
   void _handleRegister() async {
     if (!_formKey.currentState!.validate()) return;
@@ -35,24 +90,48 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
 
     setState(() => _isLoading = true);
     try {
-      await _authService.signUp(
+      final locale = context.locale;
+      final navigator = Navigator.of(context);
+      final messenger = ScaffoldMessenger.of(context);
+      final response = await _authService.signUp(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
         fullName: _nameController.text.trim(),
         role: 'patient',
+        language: locale.languageCode,
+      );
+
+      final user = response.user;
+      if (user == null) {
+        throw Exception('Account created but user session was not returned.');
+      }
+
+      await _authService.syncProfile(
+        id: user.id,
+        email: _emailController.text.trim(),
+        fullName: _nameController.text.trim(),
+        role: 'patient',
         language: context.locale.languageCode,
+        phone: _phoneController.text.trim(),
+      );
+
+      await _authService.createPatientDetails(
+        profileId: user.id,
+        location: _locationController.text.trim(),
+        birthDate: _birthDateController.text.trim(),
+        gender: _selectedGender,
       );
 
       if (mounted) {
-        Navigator.pushAndRemoveUntil(
-          context,
+        await context.setLocale(locale);
+        navigator.pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const PatientShell()),
           (route) => false,
         );
       }
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(content: Text(e.toString())),
       );
     } finally {
@@ -167,12 +246,57 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
+                      _inputLabel('Birth Date'),
+                      TextFormField(
+                        controller: _birthDateController,
+                        readOnly: true,
+                        onTap: _pickBirthDate,
+                        validator: (value) => value == null || value.isEmpty ? 'Required field' : null,
+                        decoration: InputDecoration(
+                          hintText: 'YYYY-MM-DD',
+                          prefixIcon: const Icon(Icons.event_outlined, color: AppColors.textLight, size: 20),
+                          suffixIcon: IconButton(
+                            icon: const Icon(Icons.calendar_month_outlined, color: AppColors.primary, size: 20),
+                            onPressed: _pickBirthDate,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      _inputLabel('Gender'),
+                      DropdownButtonFormField<String>(
+                        initialValue: _selectedGender,
+                        items: const [
+                          DropdownMenuItem(value: 'M', child: Text('Male')),
+                          DropdownMenuItem(value: 'F', child: Text('Female')),
+                        ],
+                        onChanged: (value) => setState(() => _selectedGender = value),
+                        validator: (value) => value == null ? 'Required field' : null,
+                        decoration: const InputDecoration(
+                          hintText: 'Select gender',
+                          prefixIcon: Icon(Icons.wc_outlined, color: AppColors.textLight, size: 20),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
                       _inputLabel('Location'),
                       TextFormField(
                         controller: _locationController,
-                        decoration: const InputDecoration(
+                        onTap: _fillCurrentLocation,
+                        decoration: InputDecoration(
                           hintText: 'Current Location',
-                          prefixIcon: Icon(Icons.location_on_outlined, color: AppColors.textLight, size: 20),
+                          prefixIcon: const Icon(Icons.location_on_outlined, color: AppColors.textLight, size: 20),
+                          suffixIcon: _isFetchingLocation
+                              ? const Padding(
+                                  padding: EdgeInsets.all(12),
+                                  child: SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(strokeWidth: 2),
+                                  ),
+                                )
+                              : IconButton(
+                                  icon: const Icon(Icons.my_location, color: AppColors.primary, size: 20),
+                                  onPressed: _fillCurrentLocation,
+                                ),
                         ),
                       ),
                       const SizedBox(height: 20),

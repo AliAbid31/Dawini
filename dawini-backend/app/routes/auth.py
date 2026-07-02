@@ -21,7 +21,7 @@ async def sync_user_profile(profile: UserProfile):
             detail="Invalid role. Must be 'patient', 'pharmacy', or 'admin'."
         )
     try:
-        response = supabase.table("profiles").insert({
+        response = supabase.table("profiles").upsert({
             "id": profile.id,
             "full_name": profile.full_name,
             "email": profile.email,

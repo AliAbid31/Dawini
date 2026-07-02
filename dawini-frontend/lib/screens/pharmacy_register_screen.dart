@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
+import 'auth_service.dart';
+import '../core/services/location_service.dart';
+import 'pharmacy_shell.dart';
 
 class PharmacyRegisterScreen extends StatefulWidget {
   const PharmacyRegisterScreen({super.key});
@@ -10,6 +13,107 @@ class PharmacyRegisterScreen extends StatefulWidget {
 
 class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
   bool _obscurePassword = true;
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _ownerNameController = TextEditingController();
+  final TextEditingController _pharmacyNameController = TextEditingController();
+  final TextEditingController _licenseController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+  final AuthService _authService = AuthService();
+  final LocationService _locationService = LocationService();
+  bool _isLoading = false;
+  bool _isFetchingLocation = false;
+
+  @override
+  void dispose() {
+    _ownerNameController.dispose();
+    _pharmacyNameController.dispose();
+    _licenseController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _addressController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _setPharmacyAddress() async {
+    setState(() => _isFetchingLocation = true);
+    try {
+      final locatedAddress = await _locationService.getCurrentAddress();
+      if (!mounted) return;
+      setState(() {
+        _addressController.text = locatedAddress.displayName;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Pharmacy address detected successfully')),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isFetchingLocation = false);
+      }
+    }
+  }
+
+  Future<void> _handleRegister() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+    try {
+      final response = await _authService.signUp(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+        fullName: _ownerNameController.text.trim(),
+        role: 'pharmacy',
+        language: 'fr',
+      );
+
+      final user = response.user;
+      if (user == null) {
+        throw Exception('Account created but user session was not returned.');
+      }
+
+      await _authService.syncProfile(
+        id: user.id,
+        email: _emailController.text.trim(),
+        fullName: _ownerNameController.text.trim(),
+        role: 'pharmacy',
+        language: 'fr',
+        phone: _phoneController.text.trim(),
+      );
+
+      await _authService.createPharmacyDetails(
+        ownerId: user.id,
+        name: _pharmacyNameController.text.trim(),
+        address: _addressController.text.trim().isEmpty
+            ? _ownerNameController.text.trim()
+            : _addressController.text.trim(),
+        licenseNumber: _licenseController.text.trim(),
+      );
+
+      if (!mounted) return;
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const PharmacyShell()),
+        (route) => false,
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +137,14 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
               const SizedBox(height: 16),
-              const Text(
+              ],
+            ),
                 'Pharmacy Partner',
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.primary),
               ),
@@ -86,24 +193,35 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
                   children: [
                     // Section Business Details
                     _sectionTitle('Business Details'),
-                    _inputLabel('Pharmacy Name'),
-                    const TextField(
-                      decoration: InputDecoration(hintText: 'e.g. LifeCare Central Pharmacy', prefixIcon: Icon(Icons.storefront_outlined, size: 20, color: AppColors.textLight)),
+                    _inputLabel('Responsible Pharmacist'),
+                    TextFormField(
+                      controller: _ownerNameController,
+                      validator: (value) => value == null || value.isEmpty ? 'Required field' : null,
+                      decoration: const InputDecoration(
+                        hintText: 'Full Legal Name',
+                        prefixIcon: Icon(Icons.person_outline, size: 20, color: AppColors.textLight),
+                      ),
                     ),
                     const SizedBox(height: 16),
-                    _inputLabel('Responsible Pharmacist'),
-                    const TextField(
-                      decoration: InputDecoration(hintText: 'Full Legal Name', prefixIcon: Icon(Icons.person_outline, size: 20, color: AppColors.textLight)),
+                    _inputLabel('Pharmacy Name'),
+                    TextFormField(
+                      controller: _pharmacyNameController,
+                      validator: (value) => value == null || value.isEmpty ? 'Required field' : null,
+                      decoration: const InputDecoration(hintText: 'e.g. LifeCare Central Pharmacy', prefixIcon: Icon(Icons.storefront_outlined, size: 20, color: AppColors.textLight)),
                     ),
                     const SizedBox(height: 16),
                     _inputLabel('License Number'),
-                    const TextField(
-                      decoration: InputDecoration(hintText: 'PH-12345678', prefixIcon: Icon(Icons.card_membership_outlined, size: 20, color: AppColors.textLight)),
+                    TextFormField(
+                      controller: _licenseController,
+                      validator: (value) => value == null || value.isEmpty ? 'Required field' : null,
+                      decoration: const InputDecoration(hintText: 'PH-12345678', prefixIcon: Icon(Icons.card_membership_outlined, size: 20, color: AppColors.textLight)),
                     ),
                     const SizedBox(height: 16),
                     _inputLabel('Phone Number'),
-                    const TextField(
+                    TextFormField(
+                      controller: _phoneController,
                       keyboardType: TextInputType.phone,
+                      validator: (value) => value == null || value.isEmpty ? 'Required field' : null,
                       decoration: InputDecoration(hintText: '+1 (555) 000-0000', prefixIcon: Icon(Icons.phone_outlined, size: 20, color: AppColors.textLight)),
                     ),
                     const SizedBox(height: 24),
@@ -111,13 +229,17 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
                     // Section Credentials
                     _sectionTitle('Credentials'),
                     _inputLabel('Professional Email'),
-                    const TextField(
+                    TextFormField(
+                      controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
+                      validator: (value) => value == null || !value.contains('@') ? 'Invalid email' : null,
                       decoration: InputDecoration(hintText: 'pharmacy@example.com', prefixIcon: Icon(Icons.mail_outline, size: 20, color: AppColors.textLight)),
                     ),
                     const SizedBox(height: 16),
                     _inputLabel('Secure Password'),
-                    TextField(
+                    TextFormField(
+                      controller: _passwordController,
+                      validator: (value) => value == null || value.length < 6 ? 'Too short' : null,
                       obscureText: _obscurePassword,
                       decoration: InputDecoration(
                         hintText: '••••••••',
@@ -150,25 +272,37 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
                           const Icon(Icons.location_on, color: AppColors.primary, size: 40),
                           Positioned(
                             bottom: 12,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10)]),
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.my_location, size: 14, color: AppColors.primary),
-                                  const SizedBox(width: 6),
-                                  const Text('Set Pharmacy Address', style: TextStyle(fontSize: 10, color: AppColors.textDark, fontWeight: FontWeight.bold)),
-                                  const SizedBox(width: 8),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                    decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(10)),
-                                    child: const Text('Select', style: TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.bold)),
-                                  )
-                                ],
+                            child: GestureDetector(
+                              onTap: _setPharmacyAddress,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10)]),
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.my_location, size: 14, color: AppColors.primary),
+                                    const SizedBox(width: 6),
+                                    Text(_isFetchingLocation ? 'Searching...' : 'Set Pharmacy Address', style: const TextStyle(fontSize: 10, color: AppColors.textDark, fontWeight: FontWeight.bold)),
+                                    const SizedBox(width: 8),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                      decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(10)),
+                                      child: const Text('Select', style: TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.bold)),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                           )
                         ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextFormField(
+                      controller: _addressController,
+                      validator: (value) => value == null || value.isEmpty ? 'Required field' : null,
+                      decoration: const InputDecoration(
+                        hintText: 'Current location address will appear here',
+                        prefixIcon: Icon(Icons.location_city_outlined, color: AppColors.textLight, size: 20),
                       ),
                     ),
                     const SizedBox(height: 32),
@@ -182,8 +316,14 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
                           elevation: 0,
                         ),
-                        onPressed: () {},
-                        child: const Text('Continue Registration', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                        onPressed: _isLoading ? null : _handleRegister,
+                        child: _isLoading
+                            ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                              )
+                            : const Text('Continue Registration', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -220,7 +360,7 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 40),
-            ],
+              ],
           ),
         ),
       ),
