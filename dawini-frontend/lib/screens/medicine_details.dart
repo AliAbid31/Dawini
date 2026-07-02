@@ -1,9 +1,37 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import 'search_results.dart';
+import '../../core/api/api_client.dart';
 
-class MedicineDetails extends StatelessWidget {
-  const MedicineDetails({super.key});
+class MedicineDetails extends StatefulWidget {
+  final String? id;
+
+  const MedicineDetails({super.key, this.id});
+
+  @override
+  State<MedicineDetails> createState() => _MedicineDetailsState();
+}
+
+class _MedicineDetailsState extends State<MedicineDetails> {
+  Map? medicine;
+
+  @override
+  void initState() {
+    super.initState();
+    loadMedicine();
+  }
+
+  Future<void> loadMedicine() async {
+    if (widget.id == null || widget.id!.isEmpty) {
+      return;
+    }
+
+    final res = await ApiClient.client.get("/patients/medicines/${widget.id}");
+
+    setState(() {
+      medicine = res.data["medicine"];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

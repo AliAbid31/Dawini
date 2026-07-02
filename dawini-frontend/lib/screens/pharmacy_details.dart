@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../core/constants/app_colors.dart';
 import 'confirmation_request.dart';
 
@@ -16,7 +17,7 @@ class PharmacyDetails extends StatelessWidget {
           icon: const Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Dawini', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18)),
+        title: Text('app_name'.tr(), style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18)),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_none, color: AppColors.textLight),
@@ -71,17 +72,17 @@ class PharmacyDetails extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Row(
+                              Row(
                                 children: [
-                                  Icon(Icons.access_time, color: AppColors.primary, size: 18),
-                                  SizedBox(width: 8),
-                                  Text('Opening Hours', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+                                  const Icon(Icons.access_time, color: AppColors.primary, size: 18),
+                                  const SizedBox(width: 8),
+                                  Text('opening_hours'.tr(), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textDark)),
                                 ],
                               ),
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                 decoration: BoxDecoration(color: const Color(0xFFDCFCE7), borderRadius: BorderRadius.circular(6)),
-                                child: const Text('Open Now', style: TextStyle(color: Color(0xFF15803D), fontSize: 9, fontWeight: FontWeight.bold)),
+                                child: Text('in_stock'.tr(), style: const TextStyle(color: Color(0xFF15803D), fontSize: 9, fontWeight: FontWeight.bold)),
                               )
                             ],
                           ),
@@ -97,9 +98,9 @@ class PharmacyDetails extends StatelessWidget {
                     // Boutons de contact
                     Row(
                       children: [
-                        Expanded(child: _actionButton(Icons.phone, 'Call', '+20 123 456 7890')),
+                        Expanded(child: _actionButton(Icons.phone, 'call'.tr(), '+20 123 456 7890')),
                         const SizedBox(width: 16),
-                        Expanded(child: _actionButton(Icons.star, 'Reviews', '120+ ratings')),
+                        Expanded(child: _actionButton(Icons.star, 'reviews'.tr(), '120+ ratings')),
                       ],
                     ),
                     const SizedBox(height: 24),
@@ -108,7 +109,7 @@ class PharmacyDetails extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Available Medicines', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+                        Text('available_medicines'.tr(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textDark)),
                         const Text('3 items found', style: TextStyle(fontSize: 11, color: AppColors.textLight)),
                       ],
                     ),
@@ -135,12 +136,12 @@ class PharmacyDetails extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const ConfirmationRequest()));
                   },
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.send_outlined, color: Colors.white, size: 16),
-                      SizedBox(width: 8),
-                      Text('Send Availability Request', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white)),
+                      const Icon(Icons.send_outlined, color: Colors.white, size: 16),
+                      const SizedBox(width: 8),
+                      Text('send_availability_request'.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white)),
                     ],
                   ),
                 ),

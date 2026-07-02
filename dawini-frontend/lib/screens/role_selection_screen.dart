@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../core/constants/app_colors.dart';
+import '../../../core/constants/app_colors.dart';
 import 'patient_register_screen.dart';
 import 'pharmacy_register_screen.dart';
 
@@ -18,12 +18,6 @@ class RoleSelectionScreen extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text('Dawini', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18)),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_none, color: AppColors.textLight),
-            onPressed: () {},
-          )
-        ],
       ),
       body: SafeArea(
         child: Padding(
@@ -39,13 +33,11 @@ class RoleSelectionScreen extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               const Text(
-                'Choose your role to customize your Dawini\nexperience and get started.',
+                'Choose your role to customize your Dawini experience and get started.',
                 style: TextStyle(fontSize: 13, color: AppColors.textMuted, height: 1.4),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 40),
-
-              // Rôle Patient
               _roleCard(
                 title: 'Patient / User',
                 description: 'Find medicines and manage your prescriptions.',
@@ -60,8 +52,6 @@ class RoleSelectionScreen extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 20),
-
-              // Rôle Pharmacien
               _roleCard(
                 title: 'Pharmacy Owner',
                 description: 'Manage inventory and respond to patient requests.',
@@ -76,15 +66,10 @@ class RoleSelectionScreen extends StatelessWidget {
                 },
               ),
               const Spacer(),
-
-              // Pied de page conditions d'utilisation
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0),
-                child: Text(
-                  'By choosing a role, you agree to Dawini\'s\nTerms of Service and Privacy Policy.',
-                  style: TextStyle(fontSize: 11, color: AppColors.textLight, height: 1.4),
-                  textAlign: TextAlign.center,
-                ),
+              const Text(
+                'By choosing a role, you agree to Dawini\'s Terms of Service and Privacy Policy.',
+                style: TextStyle(fontSize: 11, color: AppColors.textLight, height: 1.4),
+                textAlign: TextAlign.center,
               ),
               const SizedBox(height: 20),
             ],

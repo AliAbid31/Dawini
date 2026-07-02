@@ -1,22 +1,14 @@
-import os
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from dotenv import load_dotenv
-from supabase import create_client, Client
+from app.middleware.auth_middleware import WebhookSecurityMiddleware
+from app.routes import auth, patient, pharmacy, admin, webhooks
 
-load_dotenv()
-
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
-if not SUPABASE_URL or not SUPABASE_SERVICE_ROLE_KEY:
-    raise ValueError("Supabase configurations are missed.")
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 app = FastAPI(
-    title="Dawini Automation API",
-    description="Backend of Dawini Automation",
+    title="Dawini Core Engine API",
+    description="Complete backend API for Dawini, the healthcare platform.",
     version="1.0.0"
 )
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -24,4 +16,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(WebhookSecurityMiddleware)
 
+app.include_router(auth.router)
+app.include_router(patient.router)
+app.include_router(pharmacy.router)
+app.include_router(admin.router)
+app.include_router(webhooks.router)
+
+@app.get("/health", tags=["Diagnostic"])
+def get_system_health():
+    return {"status": "fully_operational", "database": "connected"}

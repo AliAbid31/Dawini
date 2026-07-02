@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
-import 'search_results.dart';
 import 'medicine_details.dart';
+import '../../core/api/api_client.dart';
 
 class MedicineSearch extends StatefulWidget {
   const MedicineSearch({super.key});
@@ -12,6 +12,23 @@ class MedicineSearch extends StatefulWidget {
 
 class _MedicineSearchState extends State<MedicineSearch> {
   final TextEditingController _searchController = TextEditingController(text: 'Panadol');
+
+  List medicines = [];
+  bool isLoading = false;
+
+  Future<void> searchMedicine(String query) async {
+    setState(() => isLoading = true);
+
+    final res = await ApiClient.client.get(
+      "/patients/medicines/search",
+      queryParameters: {"query": query},
+    );
+
+    setState(() {
+      medicines = res.data["results"];
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +61,7 @@ class _MedicineSearchState extends State<MedicineSearch> {
               // Barre de saisie
               TextField(
                 controller: _searchController,
-                onSubmitted: (value) {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const SearchResults()));
-                },
+                onSubmitted: (value) => searchMedicine(value),
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.search, color: AppColors.primary),
                   suffixIcon: IconButton(
@@ -69,40 +84,37 @@ class _MedicineSearchState extends State<MedicineSearch> {
               ),
               const SizedBox(height: 24),
 
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Available Results', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textDark)),
-                  const Text('12 Pharmacies found', style: TextStyle(fontSize: 11, color: AppColors.textLight)),
+                  Text('Available Results', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+                  Text('12 Pharmacies found', style: TextStyle(fontSize: 11, color: AppColors.textLight)),
                 ],
               ),
               const SizedBox(height: 16),
 
-              // Liste de résultats factices
-              _buildMedicineResultCard(
-                name: 'Panadol Extra (24 Tabs)',
-                pharmacy: 'El Ezaby Pharmacy • 0.8 km',
-                status: 'In Stock',
-                subStatus: 'Insurance OK',
-                statusColor: const Color(0xFF15803D),
-                statusBg: const Color(0xFFDCFCE7),
-              ),
-              _buildMedicineResultCard(
-                name: 'Panadol Advance',
-                pharmacy: 'Seif Pharmacy • 1.2 km',
-                status: 'In Stock',
-                subStatus: 'Limited',
-                statusColor: const Color(0xFF15803D),
-                statusBg: const Color(0xFFDCFCE7),
-              ),
-              _buildMedicineResultCard(
-                name: 'Panadol Cold & Flu',
-                pharmacy: 'Care Pharmacy • 2.5 km',
-                status: 'Out of Stock',
-                subStatus: 'Notify Me',
-                statusColor: const Color(0xFFB91C1C),
-                statusBg: const Color(0xFFFEE2E2),
-              ),
+              if (isLoading)
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 24),
+                  child: Center(child: CircularProgressIndicator()),
+                )
+              else if (medicines.isEmpty)
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 24),
+                  child: Text('No medicines found yet.', style: TextStyle(color: AppColors.textLight)),
+                )
+              else
+                ...medicines.map((m) {
+                  return _buildMedicineResultCard(
+                    name: m["name"] ?? "",
+                    pharmacy: m["pharmacy"] ?? "Nearby pharmacy",
+                    status: m["status"] ?? "In Stock",
+                    subStatus: m["sub_status"] ?? "Insurance OK",
+                    statusColor: const Color(0xFF15803D),
+                    statusBg: const Color(0xFFDCFCE7),
+                    medicineId: m["id"]?.toString() ?? '',
+                  );
+                }),
               const SizedBox(height: 24),
 
               // Bloc carte géographique
@@ -151,10 +163,11 @@ class _MedicineSearchState extends State<MedicineSearch> {
     required String subStatus,
     required Color statusColor,
     required Color statusBg,
+    required String medicineId,
   }) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const MedicineDetails()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => MedicineDetails(id: medicineId)));
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
@@ -222,7 +235,7 @@ class _MedicineSearchState extends State<MedicineSearch> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           margin: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 10)]),
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 10)]),
           child: Row(
             children: [
               Container(

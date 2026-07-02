@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../core/constants/app_colors.dart';
 import 'patient_shell.dart';
 import 'pharmacy_details.dart';
@@ -20,10 +21,7 @@ class UserHome extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Dawini',
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.primary),
-                  ),
+                  Text('app_name'.tr(), style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.primary)),
                   Row(
                     children: [
                       IconButton(
@@ -40,9 +38,9 @@ class UserHome extends StatelessWidget {
               ),
               const SizedBox(height: 24),
 
-              const Text('Welcome back,', style: TextStyle(fontSize: 14, color: AppColors.textMuted)),
+              Text('welcome_back_short'.tr(), style: const TextStyle(fontSize: 14, color: AppColors.textMuted)),
               const SizedBox(height: 4),
-              const Text('Hello, John', style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+              Text('${'hello'.tr()}, John', style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: AppColors.textDark)),
               const SizedBox(height: 24),
 
               // Barre de recherche redirigeant vers l'onglet Recherche
@@ -60,13 +58,13 @@ class UserHome extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(color: const Color(0xFFE2E8F0)),
                   ),
-                  child: const Row(
+                  child: Row(
                     children: [
-                      Icon(Icons.search, color: AppColors.textLight),
-                      SizedBox(width: 12),
-                      Text('Check Availability Nearby', style: TextStyle(color: AppColors.textLight, fontSize: 14)),
-                      Spacer(),
-                      Icon(Icons.qr_code_scanner, color: AppColors.textLight, size: 20),
+                      const Icon(Icons.search, color: AppColors.textLight),
+                      const SizedBox(width: 12),
+                      Text('search_medicine'.tr(), style: const TextStyle(color: AppColors.textLight, fontSize: 14)),
+                      const Spacer(),
+                      const Icon(Icons.qr_code_scanner, color: AppColors.textLight, size: 20),
                     ],
                   ),
                 ),
@@ -74,7 +72,7 @@ class UserHome extends StatelessWidget {
               const SizedBox(height: 32),
 
               // Section Alerts
-              const Text('My Active Alerts', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+              Text('my_active_alerts'.tr(), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textDark)),
               const SizedBox(height: 16),
               _buildAlertCard(),
               const SizedBox(height: 32),
@@ -83,10 +81,10 @@ class UserHome extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Nearby Pharmacies', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+                  Text('nearby_pharmacies'.tr(), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textDark)),
                   TextButton(
                     onPressed: () {},
-                    child: const Text('View Map', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 13)),
+                    child: Text('view_map'.tr(), style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 13)),
                   )
                 ],
               ),
@@ -135,7 +133,7 @@ class UserHome extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF3B82F6).withOpacity(0.3),
+            color: const Color(0xFF3B82F6).withValues(alpha: 0.3),
             blurRadius: 16,
             offset: const Offset(0, 8),
           )
@@ -244,7 +242,7 @@ class UserHome extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(vertical: 8),
                           ),
                           onPressed: () {},
-                          child: const Text('Call', style: TextStyle(fontSize: 11, color: AppColors.textDark, fontWeight: FontWeight.bold)),
+                          child: Text('call'.tr(), style: const TextStyle(fontSize: 11, color: AppColors.textDark, fontWeight: FontWeight.bold)),
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -257,7 +255,7 @@ class UserHome extends StatelessWidget {
                             elevation: 0,
                           ),
                           onPressed: () {},
-                          child: const Text('Directions', style: TextStyle(fontSize: 11, color: Colors.white, fontWeight: FontWeight.bold)),
+                          child: Text('directions'.tr(), style: const TextStyle(fontSize: 11, color: Colors.white, fontWeight: FontWeight.bold)),
                         ),
                       )
                     ],

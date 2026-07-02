@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/api/auth_service.dart';
 import 'login_screen.dart';
 
 class UserProfile extends StatefulWidget {
@@ -11,6 +13,7 @@ class UserProfile extends StatefulWidget {
 
 class _UserProfileState extends State<UserProfile> {
   bool _pushNotifications = true;
+  final AuthService _authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +26,7 @@ class _UserProfileState extends State<UserProfile> {
           icon: const Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () {},
         ),
-        title: const Text('Dawini', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18)),
+        title: Text('app_name'.tr(), style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18)),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_none, color: AppColors.textLight),
@@ -64,10 +67,10 @@ class _UserProfileState extends State<UserProfile> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('PERSONAL INFORMATION', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textLight)),
+                  Text('personal_information'.tr().toUpperCase(), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textLight)),
                   GestureDetector(
                     onTap: () {},
-                    child: const Text('Edit All', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.primary)),
+                    child: Text('view_all'.tr(), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.primary)),
                   )
                 ],
               ),
@@ -88,28 +91,28 @@ class _UserProfileState extends State<UserProfile> {
               const SizedBox(height: 32),
 
               // Section Paramètres
-              const Text('ACCOUNT SETTINGS', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textLight)),
+              Text('account_settings'.tr().toUpperCase(), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textLight)),
               const SizedBox(height: 12),
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20), border: Border.all(color: const Color(0xFFE2E8F0))),
                 child: Column(
                   children: [
-                    _buildSettingRow(Icons.lock_outline, 'Change Password', const Icon(Icons.chevron_right, color: AppColors.textLight)),
+                    _buildSettingRow(Icons.lock_outline, 'change_password'.tr(), const Icon(Icons.chevron_right, color: AppColors.textLight)),
                     const Divider(color: Color(0xFFF1F5F9)),
                     _buildSettingRow(
                       Icons.notifications_outlined,
-                      'Push Notifications',
+                      'push_notifications'.tr(),
                       Switch(
                         value: _pushNotifications,
-                        activeColor: AppColors.primary,
+                        activeThumbColor: AppColors.primary,
                         onChanged: (val) => setState(() => _pushNotifications = val),
                       ),
                     ),
                     const Divider(color: Color(0xFFF1F5F9)),
                     _buildSettingRow(
                       Icons.translate,
-                      'Language',
+                      'language'.tr(),
                       const Row(
                         children: [
                           Text('English', style: TextStyle(fontSize: 11, color: AppColors.textLight)),
@@ -134,18 +137,15 @@ class _UserProfileState extends State<UserProfile> {
                   ),
                   onPressed: () {
                     // Reset et retour à la connexion
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => const LoginScreen()),
-                          (route) => false,
-                    );
+                    _authService.signOut();
+                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const LoginScreen()), (route) => false);
                   },
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.logout, color: Color(0xFFB91C1C), size: 18),
                       SizedBox(width: 8),
-                      Text('Logout', style: TextStyle(color: Color(0xFFB91C1C), fontSize: 15, fontWeight: FontWeight.bold)),
+                      Text('logout', style: TextStyle(color: Color(0xFFB91C1C), fontSize: 15, fontWeight: FontWeight.bold)),
                     ],
                   ),
                 ),

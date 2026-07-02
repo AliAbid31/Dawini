@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../core/constants/app_colors.dart';
 
 class PharmacyRequests extends StatefulWidget {
@@ -19,7 +20,7 @@ class _PharmacyRequestsState extends State<PharmacyRequests> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(icon: const Icon(Icons.arrow_back, color: AppColors.primary), onPressed: () {}),
-        title: const Text('Dawini', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18)),
+        title: Text('app_name'.tr(), style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18)),
         actions: [
           IconButton(icon: const Icon(Icons.notifications_none, color: AppColors.textLight), onPressed: () {}),
         ],
@@ -30,9 +31,9 @@ class _PharmacyRequestsState extends State<PharmacyRequests> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text('Pharmacy Requests', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+              Text('pharmacy_requests'.tr(), style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.textDark)),
               const SizedBox(height: 4),
-              const Text('Review and manage incoming medicine orders.', style: TextStyle(fontSize: 12, color: AppColors.textLight)),
+              Text('review_manage'.tr(), style: const TextStyle(fontSize: 12, color: AppColors.textLight)),
               const SizedBox(height: 24),
 
               // Métriques des demandes
@@ -50,13 +51,13 @@ class _PharmacyRequestsState extends State<PharmacyRequests> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    _filterChip(0, 'All Requests'),
+                    _filterChip(0, 'all_requests'.tr()),
                     const SizedBox(width: 8),
-                    _filterChip(1, 'On hold'),
+                    _filterChip(1, 'on_hold_filter'.tr()),
                     const SizedBox(width: 8),
-                    _filterChip(2, 'Confirmed'),
+                    _filterChip(2, 'confirmed'.tr()),
                     const SizedBox(width: 8),
-                    _filterChip(3, 'Refused'),
+                    _filterChip(3, 'refuse'.tr()),
                   ],
                 ),
               ),
@@ -67,7 +68,7 @@ class _PharmacyRequestsState extends State<PharmacyRequests> {
                 name: 'Ahmed Mansour',
                 time: '2 mins ago • #RQ-8821',
                 medicine: 'Amoxicillin 500mg (24 Capsules)',
-                state: 'On hold',
+                state: 'on_hold'.tr(),
                 avatarUrl: 'https://i.imgur.com/Cf69I1b.png',
                 isActionable: true,
               ),
@@ -75,7 +76,7 @@ class _PharmacyRequestsState extends State<PharmacyRequests> {
                 name: 'Sara Ibrahim',
                 time: '15 mins ago • #RQ-8819',
                 medicine: 'Lisinopril 10mg (30 Tablets)',
-                state: 'Confirmed',
+                state: 'confirmed'.tr(),
                 avatarUrl: 'https://i.imgur.com/Cf69I1b.png',
                 isActionable: false,
                 isConfirmed: true,
@@ -84,7 +85,7 @@ class _PharmacyRequestsState extends State<PharmacyRequests> {
                 name: 'Omar El-Sayed',
                 time: '45 mins ago • #RQ-8815',
                 medicine: 'Ventolin Inhaler (100mcg/dose)',
-                state: 'On hold',
+                state: 'on_hold'.tr(),
                 avatarUrl: 'https://i.imgur.com/Cf69I1b.png',
                 isActionable: true,
               ),
@@ -92,7 +93,7 @@ class _PharmacyRequestsState extends State<PharmacyRequests> {
                 name: 'Youssef Ali',
                 time: '1 hour ago • #RQ-8812',
                 medicine: 'Xanax 0.5mg (Limited Item)',
-                state: 'Refused',
+                state: 'refuse'.tr(),
                 avatarUrl: 'https://i.imgur.com/Cf69I1b.png',
                 isActionable: false,
                 isRefused: true,
@@ -109,7 +110,7 @@ class _PharmacyRequestsState extends State<PharmacyRequests> {
   Widget _metricHeaderBox(String title, String val, Color textCol, Color bgCol) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: bgCol, borderRadius: BorderRadius.circular(16), border: Border.all(color: textCol.withOpacity(0.2))),
+      decoration: BoxDecoration(color: bgCol, borderRadius: BorderRadius.circular(16), border: Border.all(color: textCol.withValues(alpha: 0.2))),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -205,7 +206,7 @@ class _PharmacyRequestsState extends State<PharmacyRequests> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF15803D), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), elevation: 0),
                     onPressed: () {},
-                    child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: [Icon(Icons.check, size: 14, color: Colors.white), SizedBox(width: 4), Text('Confirm', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white))]),
+                    child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [const Icon(Icons.check, size: 14, color: Colors.white), const SizedBox(width: 4), Text('confirm'.tr(), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white))]),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -213,7 +214,7 @@ class _PharmacyRequestsState extends State<PharmacyRequests> {
                   child: OutlinedButton(
                     style: OutlinedButton.styleFrom(side: const BorderSide(color: Color(0xFFB91C1C)), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
                     onPressed: () {},
-                    child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: [Icon(Icons.close, size: 14, color: Color(0xFFB91C1C)), SizedBox(width: 4), Text('Out of Stock', style: TextStyle(fontSize: 11, color: Color(0xFFB91C1C), fontWeight: FontWeight.bold))]),
+                    child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [const Icon(Icons.close, size: 14, color: Color(0xFFB91C1C)), const SizedBox(width: 4), Text('out_of_stock'.tr(), style: const TextStyle(fontSize: 11, color: Color(0xFFB91C1C), fontWeight: FontWeight.bold))]),
                   ),
                 ),
               ],
@@ -240,7 +241,7 @@ class _PharmacyRequestsState extends State<PharmacyRequests> {
                 children: [
                   const Icon(Icons.info_outline, size: 14, color: Color(0xFFB91C1C)),
                   const SizedBox(width: 6),
-                  Text('Reason: $refusalReason', style: const TextStyle(color: Color(0xFFB91C1C), fontSize: 10, fontWeight: FontWeight.bold)),
+                  Text('${'refuse'.tr()}: $refusalReason', style: const TextStyle(color: Color(0xFFB91C1C), fontSize: 10, fontWeight: FontWeight.bold)),
                 ],
               ),
             )

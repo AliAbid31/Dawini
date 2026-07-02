@@ -98,7 +98,7 @@ class ConfirmationRequest extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Icon(Icons.info_outline, size: 16, color: AppColors.primary),
-                          const SizedBox(width: 8),
+                          SizedBox(width: 8),
                           Expanded(
                             child: Text(
                               'By sending this request, the pharmacy will check their current stock and notify you of availability.',

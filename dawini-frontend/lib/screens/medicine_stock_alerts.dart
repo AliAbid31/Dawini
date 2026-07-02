@@ -56,7 +56,7 @@ class MedicineStockAlerts extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF1F5F9).withOpacity(0.5),
+                  color: const Color(0xFFF1F5F9).withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: const Color(0xFFE2E8F0)),
                 ),

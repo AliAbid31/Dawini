@@ -14,4 +14,8 @@ class Settings:
             raise ValueError("Incomplete Supabase configuration. Check your .env file.")
 
 settings = Settings()
+if not settings.SUPABASE_URL:
+    raise ValueError("Missing SUPABASE_URL")
+if not settings.SUPABASE_SERVICE_ROLE_KEY:
+    raise ValueError("Missing SUPABASE_SERVICE_ROLE_KEY")
 supabase: Client = create_client(settings.SUPABASE_URL, settings.SUPABASE_SERVICE_ROLE_KEY)

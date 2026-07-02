@@ -1,8 +1,13 @@
 import 'dart:async';
-import 'package:dawini/screens/onboarding_screen.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import '../../core/constants/app_colors.dart';
-import './onboarding_page.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../core/constants/app_colors.dart';
+import 'admin_dashboard.dart';
+import 'patient_shell.dart';
+import 'pharmacy_shell.dart';
+import 'auth_service.dart';
+import 'login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -12,20 +17,68 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final AuthService _authService = AuthService();
+
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 2), () {
-      Navigator.of(context).pushReplacement(
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => const OnboardingScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-          transitionDuration: const Duration(milliseconds: 500),
-        ),
+    _startNavigationTimer();
+  }
+
+  void _startNavigationTimer() {
+    Timer(const Duration(seconds: 2), _checkUserSession);
+  }
+
+  Future<void> _checkUserSession() async {
+    if (!mounted) return;
+
+    final localization = EasyLocalization.of(context);
+    final navigator = Navigator.of(context);
+
+    final session = Supabase.instance.client.auth.currentSession;
+    if (session == null) {
+      navigator.pushReplacement(
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
       );
-    });
+    } else {
+      try {
+        final profile = await _authService.getUserProfile();
+        if (profile != null && mounted) {
+          final String role = profile['role'] ?? 'patient';
+          final String language = profile['preferred_language'] ?? 'fr';
+          await localization?.setLocale(Locale(language));
+
+          if (role == 'admin') {
+            navigator.pushReplacement(
+              MaterialPageRoute(builder: (context) => const AdminDashboard()),
+            );
+            return;
+          }
+
+          if (role == 'pharmacy') {
+            navigator.pushReplacement(
+              MaterialPageRoute(builder: (context) => const PharmacyShell()),
+            );
+          } else {
+            navigator.pushReplacement(
+              MaterialPageRoute(builder: (context) => const PatientShell()),
+            );
+          }
+        } else {
+          _navigateToLogin();
+        }
+      } catch (_) {
+        _navigateToLogin();
+      }
+    }
+  }
+
+  void _navigateToLogin() {
+    if (mounted) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+      );
+    }
   }
 
   @override
@@ -36,10 +89,7 @@ class _SplashScreenState extends State<SplashScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFE9F3FC),
-              Colors.white,
-            ],
+            colors: [Color(0xFFE9F3FC), Colors.white],
           ),
         ),
         child: SafeArea(
@@ -49,7 +99,6 @@ class _SplashScreenState extends State<SplashScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Icône stylisée de boîte médicale
                     Container(
                       width: 100,
                       height: 100,
@@ -92,11 +141,7 @@ class _SplashScreenState extends State<SplashScreen> {
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: const Center(
-                                  child: Icon(
-                                    Icons.add,
-                                    color: Colors.white,
-                                    size: 20,
-                                  ),
+                                  child: Icon(Icons.add, color: Colors.white, size: 20),
                                 ),
                               ),
                             ),
@@ -107,20 +152,12 @@ class _SplashScreenState extends State<SplashScreen> {
                     const SizedBox(height: 24),
                     const Text(
                       'Dawini',
-                      style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primary,
-                      ),
+                      style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: AppColors.primary),
                     ),
                     const SizedBox(height: 8),
                     const Text(
                       'Your Digital Health Companion',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: AppColors.textLight,
-                        fontWeight: FontWeight.w400,
-                      ),
+                      style: TextStyle(fontSize: 14, color: AppColors.textLight, fontWeight: FontWeight.w400),
                     ),
                   ],
                 ),

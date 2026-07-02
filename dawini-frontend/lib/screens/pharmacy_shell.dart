@@ -69,7 +69,7 @@ class PharmacyShellState extends State<PharmacyShell> {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF8EFF8E).withOpacity(0.4) : Colors.transparent,
+          color: isSelected ? const Color(0xFF8EFF8E).withValues(alpha: 0.4) : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Column(
