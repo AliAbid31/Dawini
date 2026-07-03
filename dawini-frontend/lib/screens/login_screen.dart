@@ -205,19 +205,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 40),
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.verified_user_outlined, size: 14, color: AppColors.textLight),
-                    SizedBox(width: 4),
-                    Text('HIPAA Compliant', style: TextStyle(fontSize: 11, color: AppColors.textLight)),
-                    SizedBox(width: 16),
-                    Icon(Icons.lock_clock_outlined, size: 14, color: AppColors.textLight),
-                    SizedBox(width: 4),
-                    Text('256-bit Encryption', style: TextStyle(fontSize: 11, color: AppColors.textLight)),
-                  ],
-                ),
                 const SizedBox(height: 48),
                 const Text(
                   '© 2024 Dawini Healthcare Systems',

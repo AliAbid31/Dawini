@@ -380,16 +380,6 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
                 ),
               ),
               const SizedBox(height: 32),
-
-              // Certification Footers
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _badgeIcon(Icons.shield_outlined, 'HIPAA COMPLIANT'),
-                  _badgeIcon(Icons.gpp_good_outlined, '256-BIT AES'),
-                  _badgeIcon(Icons.verified_outlined, 'VERIFIED DOCS'),
-                ],
-              ),
               const SizedBox(height: 24),
               const Text(
                 'By joining Dawini, you agree to our Terms of Service and Privacy Policy.',
@@ -421,16 +411,6 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
       child: Text(text, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textDark)),
-    );
-  }
-
-  static Widget _badgeIcon(IconData icon, String text) {
-    return Row(
-      children: [
-        Icon(icon, size: 12, color: AppColors.textLight),
-        const SizedBox(width: 4),
-        Text(text, style: const TextStyle(fontSize: 9, color: AppColors.textLight, fontWeight: FontWeight.bold)),
-      ],
     );
   }
 }
