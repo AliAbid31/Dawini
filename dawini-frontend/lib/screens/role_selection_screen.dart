@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../core/constants/app_colors.dart';
+import '../core/constants/app_colors.dart';
 import 'patient_register_screen.dart';
 import 'pharmacy_register_screen.dart';
 

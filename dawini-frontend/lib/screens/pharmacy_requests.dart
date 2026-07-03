@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import '../../core/constants/app_colors.dart';
+import '../core/constants/app_colors.dart';
 
 class PharmacyRequests extends StatefulWidget {
   const PharmacyRequests({super.key});

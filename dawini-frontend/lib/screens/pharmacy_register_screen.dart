@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../core/constants/app_colors.dart';
+import '../core/constants/app_colors.dart';
 import 'auth_service.dart';
-import '../core/services/location_service.dart';
+import 'location_picker_screen.dart';
 import 'pharmacy_shell.dart';
 
 class PharmacyRegisterScreen extends StatefulWidget {
@@ -22,9 +22,9 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final AuthService _authService = AuthService();
-  final LocationService _locationService = LocationService();
   bool _isLoading = false;
-  bool _isFetchingLocation = false;
+  double? _selectedLat;
+  double? _selectedLng;
 
   @override
   void dispose() {
@@ -38,26 +38,24 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
     super.dispose();
   }
 
-  Future<void> _setPharmacyAddress() async {
-    setState(() => _isFetchingLocation = true);
-    try {
-      final locatedAddress = await _locationService.getCurrentAddress();
-      if (!mounted) return;
+  Future<void> _openMapPicker() async {
+    final result = await Navigator.push<LocationPickerResult>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LocationPickerScreen(
+          initialLatitude: _selectedLat,
+          initialLongitude: _selectedLng,
+          initialAddress: _addressController.text.isNotEmpty ? _addressController.text : null,
+        ),
+      ),
+    );
+
+    if (result != null && mounted) {
       setState(() {
-        _addressController.text = locatedAddress.displayName;
+        _selectedLat = result.latitude;
+        _selectedLng = result.longitude;
+        _addressController.text = result.address;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Pharmacy address detected successfully')),
-      );
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
-      );
-    } finally {
-      if (mounted) {
-        setState(() => _isFetchingLocation = false);
-      }
     }
   }
 
@@ -143,8 +141,7 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
               const SizedBox(height: 16),
-              ],
-            ),
+              const Text(
                 'Pharmacy Partner',
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.primary),
               ),
@@ -254,55 +251,95 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
 
                     // Section Map / Location Selector
                     _sectionTitle('Location'),
-                    Container(
-                      height: 140,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF1F5F9),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: const Color(0xFFE2E8F0)),
-                        image: const DecorationImage(
-                          image: NetworkImage('https://i.imgur.com/39QOskD.png'), // Illustration générique de carte
-                          fit: BoxFit.cover,
-                          opacity: 0.3,
+                    GestureDetector(
+                      onTap: _openMapPicker,
+                      child: Container(
+                        height: 160,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: const Color(0xFFE2E8F0)),
+                          image: _selectedLat != null && _selectedLng != null
+                              ? DecorationImage(
+                                  image: NetworkImage(
+                                    'https://tile.openstreetmap.org/static/'
+                                    '$_selectedLng,$_selectedLat,15/400x160.png',
+                                  ),
+                                  fit: BoxFit.cover,
+                                )
+                              : null,
+                          color: const Color(0xFFF1F5F9),
                         ),
-                      ),
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          const Icon(Icons.location_on, color: AppColors.primary, size: 40),
-                          Positioned(
-                            bottom: 12,
-                            child: GestureDetector(
-                              onTap: _setPharmacyAddress,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Icon(
+                              Icons.location_on,
+                              color: AppColors.primary.withValues(alpha: _selectedLat != null ? 1.0 : 0.4),
+                              size: 40,
+                            ),
+                            Positioned(
+                              bottom: 12,
                               child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10)]),
+                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 10)],
+                                ),
                                 child: Row(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    const Icon(Icons.my_location, size: 14, color: AppColors.primary),
+                                    Icon(
+                                      _selectedLat != null ? Icons.edit_location : Icons.map_outlined,
+                                      size: 14, color: AppColors.primary,
+                                    ),
                                     const SizedBox(width: 6),
-                                    Text(_isFetchingLocation ? 'Searching...' : 'Set Pharmacy Address', style: const TextStyle(fontSize: 10, color: AppColors.textDark, fontWeight: FontWeight.bold)),
+                                    Text(
+                                      _selectedLat != null ? 'Change Location' : 'Set Pharmacy Location',
+                                      style: const TextStyle(fontSize: 11, color: AppColors.textDark, fontWeight: FontWeight.bold),
+                                    ),
                                     const SizedBox(width: 8),
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                       decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(10)),
-                                      child: const Text('Select', style: TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.bold)),
+                                      child: Text(
+                                        _selectedLat != null ? 'Edit' : 'Select',
+                                        style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold),
+                                      ),
                                     )
                                   ],
                                 ),
                               ),
                             ),
-                          )
-                        ],
+                            if (_selectedLat == null)
+                              Positioned(
+                                top: 12,
+                                right: 12,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.orange,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: const Text('REQUIRED', style: TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.bold)),
+                                ),
+                              ),
+                          ],
+                        ),
                       ),
                     ),
                     const SizedBox(height: 12),
                     TextFormField(
                       controller: _addressController,
-                      validator: (value) => value == null || value.isEmpty ? 'Required field' : null,
-                      decoration: const InputDecoration(
-                        hintText: 'Current location address will appear here',
-                        prefixIcon: Icon(Icons.location_city_outlined, color: AppColors.textLight, size: 20),
+                      readOnly: true,
+                      onTap: _openMapPicker,
+                      decoration: InputDecoration(
+                        hintText: 'Tap to select pharmacy location on map',
+                        prefixIcon: const Icon(Icons.location_city_outlined, color: AppColors.textLight, size: 20),
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.open_in_new, color: AppColors.primary, size: 18),
+                          onPressed: _openMapPicker,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 32),
@@ -364,7 +401,7 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
           ),
         ),
       ),
-    );
+    ));
   }
 
   Widget _sectionTitle(String title) {

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import '../../core/constants/app_colors.dart';
+import '../core/constants/app_colors.dart';
 import 'patient_shell.dart';
 import 'pharmacy_shell.dart';
 import 'admin_dashboard.dart';
-import '../../core/api/auth_service.dart';
+import '../core/api/auth_service.dart';
 import 'role_selection_screen.dart';
 
 class LoginScreen extends StatefulWidget {

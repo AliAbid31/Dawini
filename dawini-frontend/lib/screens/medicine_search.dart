@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../core/constants/app_colors.dart';
+import '../core/constants/app_colors.dart';
 import 'medicine_details.dart';
-import '../../core/api/api_client.dart';
+import '../core/api/api_client.dart';
+import 'pharmacy_map_view.dart';
 
 class MedicineSearch extends StatefulWidget {
   const MedicineSearch({super.key});
@@ -123,7 +124,9 @@ class _MedicineSearchState extends State<MedicineSearch> {
                 children: [
                   const Text('Pharmacies Nearby', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textDark)),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const PharmacyMapView()));
+                    },
                     child: const Text('View Map', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 12)),
                   )
                 ],
@@ -263,8 +266,10 @@ class _MedicineSearchState extends State<MedicineSearch> {
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   elevation: 0,
                 ),
-                onPressed: () {},
-                child: const Text('Get Directions', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white)),
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const PharmacyMapView()));
+                },
+                child: const Text('View on Map', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white)),
               )
             ],
           ),

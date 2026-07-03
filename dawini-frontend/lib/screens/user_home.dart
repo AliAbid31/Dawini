@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import '../../core/constants/app_colors.dart';
+import '../core/constants/app_colors.dart';
 import 'patient_shell.dart';
 import 'pharmacy_details.dart';
+import 'pharmacy_map_view.dart';
 
 class UserHome extends StatelessWidget {
   const UserHome({super.key});
@@ -83,7 +84,9 @@ class UserHome extends StatelessWidget {
                 children: [
                   Text('nearby_pharmacies'.tr(), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textDark)),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const PharmacyMapView()));
+                    },
                     child: Text('view_map'.tr(), style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 13)),
                   )
                 ],

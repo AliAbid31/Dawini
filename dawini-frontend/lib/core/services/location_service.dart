@@ -43,12 +43,16 @@ class LocationService {
       ),
     );
 
+    return reverseGeocode(position.latitude, position.longitude);
+  }
+
+  Future<LocatedAddress> reverseGeocode(double latitude, double longitude) async {
     final response = await _dio.get(
       'https://nominatim.openstreetmap.org/reverse',
       queryParameters: {
         'format': 'jsonv2',
-        'lat': position.latitude,
-        'lon': position.longitude,
+        'lat': latitude,
+        'lon': longitude,
         'addressdetails': 1,
       },
       options: Options(
@@ -63,11 +67,38 @@ class LocationService {
     final displayName = (data['display_name'] as String?)?.trim();
 
     return LocatedAddress(
-      latitude: position.latitude,
-      longitude: position.longitude,
+      latitude: latitude,
+      longitude: longitude,
       displayName: displayName == null || displayName.isEmpty
-          ? '${position.latitude}, ${position.longitude}'
+          ? '$latitude, $longitude'
           : displayName,
     );
+  }
+
+  Future<List<LocatedAddress>> searchPlaces(String query) async {
+    final response = await _dio.get(
+      'https://nominatim.openstreetmap.org/search',
+      queryParameters: {
+        'q': query,
+        'format': 'jsonv2',
+        'addressdetails': 1,
+        'limit': 10,
+      },
+      options: Options(
+        headers: const {
+          'User-Agent': 'DawiniApp/1.0 (flutter)',
+          'Accept': 'application/json',
+        },
+      ),
+    );
+
+    final List data = response.data as List;
+    return data.map((item) {
+      return LocatedAddress(
+        latitude: double.parse(item['lat']),
+        longitude: double.parse(item['lon']),
+        displayName: item['display_name'] ?? '',
+      );
+    }).toList();
   }
 }

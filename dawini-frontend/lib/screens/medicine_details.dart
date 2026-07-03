@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../core/constants/app_colors.dart';
+import '../core/constants/app_colors.dart';
 import 'search_results.dart';
-import '../../core/api/api_client.dart';
+import '../core/api/api_client.dart';
 
 class MedicineDetails extends StatefulWidget {
   final String? id;

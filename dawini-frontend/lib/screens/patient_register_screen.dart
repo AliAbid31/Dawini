@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import '../../../core/constants/app_colors.dart';
+import '../core/constants/app_colors.dart';
 import 'patient_shell.dart';
 import 'auth_service.dart';
+import 'location_picker_screen.dart';
 import '../core/services/location_service.dart';
 
 class PatientRegisterScreen extends StatefulWidget {
@@ -27,6 +28,8 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
   bool _isLoading = false;
   bool _isFetchingLocation = false;
   String? _selectedGender;
+  double? _selectedLat;
+  double? _selectedLng;
 
   @override
   void dispose() {
@@ -61,6 +64,8 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
       final locatedAddress = await _locationService.getCurrentAddress();
       if (!mounted) return;
       setState(() {
+        _selectedLat = locatedAddress.latitude;
+        _selectedLng = locatedAddress.longitude;
         _locationController.text = locatedAddress.displayName;
       });
       ScaffoldMessenger.of(context).showSnackBar(
@@ -78,6 +83,27 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
     }
   }
 
+  Future<void> _openMapPicker() async {
+    final result = await Navigator.push<LocationPickerResult>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LocationPickerScreen(
+          initialLatitude: _selectedLat,
+          initialLongitude: _selectedLng,
+          initialAddress: _locationController.text.isNotEmpty ? _locationController.text : null,
+        ),
+      ),
+    );
+
+    if (result != null && mounted) {
+      setState(() {
+        _selectedLat = result.latitude;
+        _selectedLng = result.longitude;
+        _locationController.text = result.address;
+      });
+    }
+  }
+
   void _handleRegister() async {
     if (!_formKey.currentState!.validate()) return;
     if (!_agreeTerms) {
@@ -88,11 +114,12 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
       return;
     }
 
+    if (!mounted) return;
+    final locale = context.locale;
+    final navigator = Navigator.of(context);
+
     setState(() => _isLoading = true);
     try {
-      final locale = context.locale;
-      final navigator = Navigator.of(context);
-      final messenger = ScaffoldMessenger.of(context);
       final response = await _authService.signUp(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
@@ -111,7 +138,7 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
         email: _emailController.text.trim(),
         fullName: _nameController.text.trim(),
         role: 'patient',
-        language: context.locale.languageCode,
+        language: locale.languageCode,
         phone: _phoneController.text.trim(),
       );
 
@@ -131,7 +158,7 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
       }
     } catch (e) {
       if (!mounted) return;
-      messenger.showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.toString())),
       );
     } finally {
@@ -278,26 +305,43 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
                       ),
                       const SizedBox(height: 16),
                       _inputLabel('Location'),
-                      TextFormField(
-                        controller: _locationController,
-                        onTap: _fillCurrentLocation,
-                        decoration: InputDecoration(
-                          hintText: 'Current Location',
-                          prefixIcon: const Icon(Icons.location_on_outlined, color: AppColors.textLight, size: 20),
-                          suffixIcon: _isFetchingLocation
-                              ? const Padding(
-                                  padding: EdgeInsets.all(12),
-                                  child: SizedBox(
-                                    width: 16,
-                                    height: 16,
-                                    child: CircularProgressIndicator(strokeWidth: 2),
-                                  ),
-                                )
-                              : IconButton(
-                                  icon: const Icon(Icons.my_location, color: AppColors.primary, size: 20),
-                                  onPressed: _fillCurrentLocation,
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              controller: _locationController,
+                              readOnly: true,
+                              onTap: _openMapPicker,
+                              validator: (value) => value == null || value.isEmpty ? 'Required field' : null,
+                              decoration: InputDecoration(
+                                hintText: 'Select your location',
+                                prefixIcon: const Icon(Icons.location_on_outlined, color: AppColors.textLight, size: 20),
+                                suffixIcon: IconButton(
+                                  icon: const Icon(Icons.open_in_new, color: AppColors.primary, size: 18),
+                                  onPressed: _openMapPicker,
                                 ),
-                        ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: IconButton(
+                              icon: _isFetchingLocation
+                                  ? const SizedBox(
+                                      width: 18, height: 18,
+                                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                                    )
+                                  : const Icon(Icons.my_location, color: Colors.white, size: 22),
+                              onPressed: _isFetchingLocation ? null : _fillCurrentLocation,
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 20),
                       Row(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../core/constants/app_colors.dart';
+import '../core/constants/app_colors.dart';
 import 'pharmacy_dashboard.dart';
 import 'inventory_management.dart';
 import 'pharmacy_requests.dart';

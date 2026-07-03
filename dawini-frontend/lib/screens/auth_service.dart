@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:easy_localization/easy_localization.dart';
+import '../core/api/api_client.dart';
+import '../core/api/api_endpoints.dart';
 
 class AuthService {
   SupabaseClient? get _supabase {
@@ -127,18 +129,13 @@ class AuthService {
     required String language,
     String? phone,
   }) async {
-    final supabase = _supabase;
-    if (supabase == null) {
-      throw Exception('Supabase is not initialized.');
-    }
-
-    await supabase.from('profiles').upsert({
+    await ApiClient.client.post(ApiEndpoints.syncProfile, data: {
       'id': id,
       'full_name': fullName,
       'email': email,
       'role': role,
-      'phone': phone,
       'preferred_language': language,
+      if (phone != null && phone.trim().isNotEmpty) 'phone': phone.trim(),
     });
   }
 
@@ -148,16 +145,11 @@ class AuthService {
     String? birthDate,
     String? gender,
   }) async {
-    final supabase = _supabase;
-    if (supabase == null) {
-      throw Exception('Supabase is not initialized.');
-    }
-
-    await supabase.from('patients').upsert({
+    await ApiClient.client.post(ApiEndpoints.createPatientDetails, data: {
       'profile_id': profileId,
-      'location': location,
-      'birth_date': birthDate,
-      'gender': gender,
+      if (location != null && location.trim().isNotEmpty) 'location': location.trim(),
+      if (birthDate != null && birthDate.trim().isNotEmpty) 'birth_date': birthDate.trim(),
+      if (gender != null && gender.trim().isNotEmpty) 'gender': gender.trim(),
     });
   }
 
@@ -167,17 +159,11 @@ class AuthService {
     required String address,
     required String licenseNumber,
   }) async {
-    final supabase = _supabase;
-    if (supabase == null) {
-      throw Exception('Supabase is not initialized.');
-    }
-
-    await supabase.from('pharmacies').upsert({
+    await ApiClient.client.post(ApiEndpoints.createPharmacyDetails, data: {
       'owner_id': ownerId,
-      'name': name,
-      'address': address,
-      'license_number': licenseNumber,
-      'is_verified': false,
+      'name': name.trim(),
+      'address': address.trim(),
+      'license_number': licenseNumber.trim(),
     });
   }
 }
