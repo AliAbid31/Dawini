@@ -23,7 +23,7 @@ class HandleRequestAction(BaseModel):
 @router.post("/details", status_code=status.HTTP_201_CREATED)
 async def create_pharmacy_details(pharmacy: Pharmacy):
     try:
-        response = supabase.table("pharmacies").insert({
+        response = supabase.table("pharmacies").upsert({
             "owner_id": pharmacy.owner_id,
             "name": pharmacy.name,
             "address": pharmacy.address,

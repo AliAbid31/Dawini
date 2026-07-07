@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:country_picker/country_picker.dart';
 import '../core/constants/app_colors.dart';
 import 'patient_shell.dart';
 import 'auth_service.dart';
 import 'location_picker_screen.dart';
 import '../core/services/location_service.dart';
+import 'custom_country_picker.dart';
 
 class PatientRegisterScreen extends StatefulWidget {
   const PatientRegisterScreen({super.key});
@@ -30,6 +32,7 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
   String? _selectedGender;
   double? _selectedLat;
   double? _selectedLng;
+  Country _selectedCountry = CountryService().findByCode('DZ')!;
 
   @override
   void dispose() {
@@ -139,7 +142,7 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
         fullName: _nameController.text.trim(),
         role: 'patient',
         language: locale.languageCode,
-        phone: _phoneController.text.trim(),
+        phone: '+${_selectedCountry.phoneCode}${_phoneController.text.trim()}',
       );
 
       await _authService.createPatientDetails(
@@ -240,14 +243,47 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
                       ),
                       const SizedBox(height: 16),
                       _inputLabel('Phone Number'),
-                      TextFormField(
-                        controller: _phoneController,
-                        keyboardType: TextInputType.phone,
-                        validator: (value) => value == null || value.isEmpty ? 'Required field' : null,
-                        decoration: const InputDecoration(
-                          hintText: '+1 (555) 000-0000',
-                          prefixIcon: Icon(Icons.phone_outlined, color: AppColors.textLight, size: 20),
-                        ),
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              showCustomCountryPicker(
+                                context: context,
+                                onSelect: (country) => setState(() => _selectedCountry = country),
+                              );
+                            },
+                            child: Container(
+                              height: 46,
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF1F5F9),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: const Color(0xFFE2E8F0)),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(_selectedCountry.flagEmoji, style: const TextStyle(fontSize: 18)),
+                                  const SizedBox(width: 4),
+                                  Text('+${_selectedCountry.phoneCode}', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+                                  const Icon(Icons.arrow_drop_down, color: AppColors.textLight, size: 18),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: TextFormField(
+                              controller: _phoneController,
+                              keyboardType: TextInputType.phone,
+                              validator: (value) => value == null || value.isEmpty ? 'Required field' : null,
+                              decoration: const InputDecoration(
+                                hintText: '000-0000',
+                                prefixIcon: Icon(Icons.phone_outlined, color: AppColors.textLight, size: 20),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 16),
                       _inputLabel('Password'),

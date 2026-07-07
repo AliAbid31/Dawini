@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -129,14 +130,19 @@ class AuthService {
     required String language,
     String? phone,
   }) async {
-    await ApiClient.client.post(ApiEndpoints.syncProfile, data: {
-      'id': id,
-      'full_name': fullName,
-      'email': email,
-      'role': role,
-      'preferred_language': language,
-      if (phone != null && phone.trim().isNotEmpty) 'phone': phone.trim(),
-    });
+    try {
+      await ApiClient.client.post(ApiEndpoints.syncProfile, data: {
+        'id': id,
+        'full_name': fullName,
+        'email': email,
+        'role': role,
+        'preferred_language': language,
+        if (phone != null && phone.trim().isNotEmpty) 'phone': phone.trim(),
+      });
+      return;
+    } on DioException {
+      _fallbackSyncProfile(id, email, fullName, role, language, phone);
+    }
   }
 
   Future<void> createPatientDetails({
@@ -145,12 +151,17 @@ class AuthService {
     String? birthDate,
     String? gender,
   }) async {
-    await ApiClient.client.post(ApiEndpoints.createPatientDetails, data: {
-      'profile_id': profileId,
-      if (location != null && location.trim().isNotEmpty) 'location': location.trim(),
-      if (birthDate != null && birthDate.trim().isNotEmpty) 'birth_date': birthDate.trim(),
-      if (gender != null && gender.trim().isNotEmpty) 'gender': gender.trim(),
-    });
+    try {
+      await ApiClient.client.post(ApiEndpoints.createPatientDetails, data: {
+        'profile_id': profileId,
+        if (location != null && location.trim().isNotEmpty) 'location': location.trim(),
+        if (birthDate != null && birthDate.trim().isNotEmpty) 'birth_date': birthDate.trim(),
+        if (gender != null && gender.trim().isNotEmpty) 'gender': gender.trim(),
+      });
+      return;
+    } on DioException {
+      _fallbackCreatePatient(profileId, location, birthDate, gender);
+    }
   }
 
   Future<void> createPharmacyDetails({
@@ -159,11 +170,52 @@ class AuthService {
     required String address,
     required String licenseNumber,
   }) async {
-    await ApiClient.client.post(ApiEndpoints.createPharmacyDetails, data: {
+    try {
+      await ApiClient.client.post(ApiEndpoints.createPharmacyDetails, data: {
+        'owner_id': ownerId,
+        'name': name.trim(),
+        'address': address.trim(),
+        'license_number': licenseNumber.trim(),
+      });
+      return;
+    } on DioException {
+      _fallbackCreatePharmacy(ownerId, name, address, licenseNumber);
+    }
+  }
+
+  Future<void> _fallbackSyncProfile(String id, String email, String fullName, String role, String language, String? phone) async {
+    final supabase = _supabase;
+    if (supabase == null) throw Exception('Supabase not available for profile sync.');
+    await supabase.from('profiles').upsert({
+      'id': id,
+      'full_name': fullName,
+      'email': email,
+      'role': role,
+      'phone': phone,
+      'preferred_language': language,
+    });
+  }
+
+  Future<void> _fallbackCreatePatient(String profileId, String? location, String? birthDate, String? gender) async {
+    final supabase = _supabase;
+    if (supabase == null) throw Exception('Supabase not available for patient details.');
+    await supabase.from('patients').upsert({
+      'profile_id': profileId,
+      if (location != null && location.trim().isNotEmpty) 'location': location.trim(),
+      if (birthDate != null && birthDate.trim().isNotEmpty) 'birth_date': birthDate.trim(),
+      if (gender != null && gender.trim().isNotEmpty) 'gender': gender.trim(),
+    });
+  }
+
+  Future<void> _fallbackCreatePharmacy(String ownerId, String name, String address, String licenseNumber) async {
+    final supabase = _supabase;
+    if (supabase == null) throw Exception('Supabase not available for pharmacy details.');
+    await supabase.from('pharmacies').upsert({
       'owner_id': ownerId,
       'name': name.trim(),
       'address': address.trim(),
       'license_number': licenseNumber.trim(),
+      'is_verified': false,
     });
   }
 }

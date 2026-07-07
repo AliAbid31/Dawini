@@ -145,3 +145,38 @@ on public.alerts
 for all
 using (auth.uid() = patient_id)
 with check (auth.uid() = patient_id);
+
+-- Patient details: owner only
+drop policy if exists "patients_self" on public.patients;
+create policy "patients_self"
+on public.patients
+for all
+using (auth.uid() = profile_id)
+with check (auth.uid() = profile_id);
+
+-- Pharmacies: owner manages, everyone can read
+drop policy if exists "pharmacies_select" on public.pharmacies;
+create policy "pharmacies_select"
+on public.pharmacies
+for select
+using (true);
+
+drop policy if exists "pharmacies_self" on public.pharmacies;
+create policy "pharmacies_self"
+on public.pharmacies
+for insert
+with check (auth.uid() = owner_id);
+
+drop policy if exists "pharmacies_self_update" on public.pharmacies;
+create policy "pharmacies_self_update"
+on public.pharmacies
+for update
+using (auth.uid() = owner_id)
+with check (auth.uid() = owner_id);
+
+-- Medicines: readable by all authenticated users
+drop policy if exists "medicines_read" on public.medicines;
+create policy "medicines_read"
+on public.medicines
+for select
+using (true);

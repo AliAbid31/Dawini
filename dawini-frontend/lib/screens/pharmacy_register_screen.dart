@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:country_picker/country_picker.dart';
 import '../core/constants/app_colors.dart';
 import 'auth_service.dart';
 import 'location_picker_screen.dart';
 import 'pharmacy_shell.dart';
+import 'custom_country_picker.dart';
 
 class PharmacyRegisterScreen extends StatefulWidget {
   const PharmacyRegisterScreen({super.key});
@@ -25,6 +28,7 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
   bool _isLoading = false;
   double? _selectedLat;
   double? _selectedLng;
+  Country _selectedCountry = CountryService().findByCode('DZ')!;
 
   @override
   void dispose() {
@@ -63,13 +67,14 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
+    final locale = context.locale.languageCode;
     try {
       final response = await _authService.signUp(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
         fullName: _ownerNameController.text.trim(),
         role: 'pharmacy',
-        language: 'fr',
+        language: locale,
       );
 
       final user = response.user;
@@ -82,8 +87,8 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
         email: _emailController.text.trim(),
         fullName: _ownerNameController.text.trim(),
         role: 'pharmacy',
-        language: 'fr',
-        phone: _phoneController.text.trim(),
+        language: locale,
+        phone: '+${_selectedCountry.phoneCode}${_phoneController.text.trim()}',
       );
 
       await _authService.createPharmacyDetails(
@@ -215,11 +220,47 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
                     ),
                     const SizedBox(height: 16),
                     _inputLabel('Phone Number'),
-                    TextFormField(
-                      controller: _phoneController,
-                      keyboardType: TextInputType.phone,
-                      validator: (value) => value == null || value.isEmpty ? 'Required field' : null,
-                      decoration: InputDecoration(hintText: '+1 (555) 000-0000', prefixIcon: Icon(Icons.phone_outlined, size: 20, color: AppColors.textLight)),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            showCustomCountryPicker(
+                              context: context,
+                              onSelect: (country) => setState(() => _selectedCountry = country),
+                            );
+                          },
+                          child: Container(
+                            height: 46,
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF1F5F9),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: const Color(0xFFE2E8F0)),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(_selectedCountry.flagEmoji, style: const TextStyle(fontSize: 18)),
+                                const SizedBox(width: 4),
+                                Text('+${_selectedCountry.phoneCode}', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+                                const Icon(Icons.arrow_drop_down, color: AppColors.textLight, size: 18),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: TextFormField(
+                            controller: _phoneController,
+                            keyboardType: TextInputType.phone,
+                            validator: (value) => value == null || value.isEmpty ? 'Required field' : null,
+                            decoration: const InputDecoration(
+                              hintText: '000-0000',
+                              prefixIcon: Icon(Icons.phone_outlined, size: 20, color: AppColors.textLight),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 24),
 
