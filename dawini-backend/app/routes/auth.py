@@ -11,7 +11,7 @@ class UserProfile(BaseModel):
     full_name: str
     role: Literal["patient", "pharmacy", "admin"]
     phone: str | None = None
-    preferred_language: str = "fr"
+    preferred_language: Literal["fr", "en"] = "fr"
 
 @router.post("/sync-profile", status_code=status.HTTP_201_CREATED)
 async def sync_user_profile(profile: UserProfile):

@@ -23,14 +23,25 @@ class HandleRequestAction(BaseModel):
 @router.post("/details", status_code=status.HTTP_201_CREATED)
 async def create_pharmacy_details(pharmacy: Pharmacy):
     try:
+        profile = supabase.table("profiles").select("id").eq("id", pharmacy.owner_id).execute()
+        if not profile.data:
+            raise HTTPException(
+                status_code=400,
+                detail="Profile not found. Call /api/v1/auth/sync-profile first."
+            )
+
         response = supabase.table("pharmacies").upsert({
             "owner_id": pharmacy.owner_id,
             "name": pharmacy.name,
             "address": pharmacy.address,
             "license_number": pharmacy.license_number,
             "is_verified": False
-        }).execute()
+        }, on_conflict="license_number").execute()
+        if not response.data:
+            raise HTTPException(status_code=400, detail="Pharmacy creation failed.")
         return {"success": True, "pharmacy": response.data[0]}
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
