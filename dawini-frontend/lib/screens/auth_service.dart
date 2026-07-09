@@ -36,8 +36,9 @@ class AuthService {
       return response;
     } on AuthException catch (e) {
       throw Exception(e.message);
-    } catch (e) {
-      throw Exception('An unexpected error occurred during sign in.');
+    } catch (e, stack) {
+      debugPrint('SignIn Error: $e\n$stack');
+      throw Exception('An unexpected error occurred during sign in: $e');
     }
   }
 
@@ -66,8 +67,9 @@ class AuthService {
       return response;
     } on AuthException catch (e) {
       throw Exception(e.message);
-    } catch (e) {
-      throw Exception('An unexpected error occurred during sign up.');
+    } catch (e, stack) {
+      debugPrint('SignUp Error: $e\n$stack');
+      throw Exception('An unexpected error occurred during sign up: $e');
     }
   }
 
@@ -140,8 +142,15 @@ class AuthService {
         if (phone != null && phone.trim().isNotEmpty) 'phone': phone.trim(),
       });
       return;
-    } on DioException {
-      _fallbackSyncProfile(id, email, fullName, role, language, phone);
+    } on DioException catch (e) {
+      debugPrint('DioException in syncProfile: ${e.message}');
+      try {
+        await _fallbackSyncProfile(id, email, fullName, role, language, phone);
+      } catch (fallbackError) {
+        throw Exception('Failed to sync profile: $fallbackError');
+      }
+    } catch (e) {
+      throw Exception('Unexpected error in syncProfile: $e');
     }
   }
 
@@ -159,8 +168,15 @@ class AuthService {
         if (gender != null && gender.trim().isNotEmpty) 'gender': gender.trim(),
       });
       return;
-    } on DioException {
-      _fallbackCreatePatient(profileId, location, birthDate, gender);
+    } on DioException catch (e) {
+      debugPrint('DioException in createPatientDetails: ${e.message}');
+      try {
+        await _fallbackCreatePatient(profileId, location, birthDate, gender);
+      } catch (fallbackError) {
+        throw Exception('Failed to create patient details: $fallbackError');
+      }
+    } catch (e) {
+      throw Exception('Unexpected error in createPatientDetails: $e');
     }
   }
 
@@ -178,8 +194,15 @@ class AuthService {
         'license_number': licenseNumber.trim(),
       });
       return;
-    } on DioException {
-      _fallbackCreatePharmacy(ownerId, name, address, licenseNumber);
+    } on DioException catch (e) {
+      debugPrint('DioException in createPharmacyDetails: ${e.message}');
+      try {
+        await _fallbackCreatePharmacy(ownerId, name, address, licenseNumber);
+      } catch (fallbackError) {
+        throw Exception('Failed to create pharmacy details: $fallbackError');
+      }
+    } catch (e) {
+      throw Exception('Unexpected error in createPharmacyDetails: $e');
     }
   }
 

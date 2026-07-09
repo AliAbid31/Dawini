@@ -29,14 +29,23 @@ class _LoginScreenState extends State<LoginScreen> {
 
     setState(() => _isLoading = true);
 
-    final res = await _authService.signIn(
-      email: _emailController.text.trim(),
-      password: _passwordController.text.trim(),
-    );
+    try {
+      final res = await _authService.signIn(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
 
-    final user = res.user;
+      final user = res.user;
 
-    if (user != null) {
+      if (user == null) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Login failed. Check your credentials.')),
+          );
+        }
+        return;
+      }
+
       await _authService.syncProfile(
         id: user.id,
         email: user.email ?? '',
@@ -71,10 +80,15 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         (route) => false,
       );
-    }
-
-    if (mounted) {
-      setState(() => _isLoading = false);
+    } catch (e) {
+      if (mounted) {
+        final msg = e.toString().replaceFirst('Exception: ', '');
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 

@@ -154,10 +154,33 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
 
       if (mounted) {
         await context.setLocale(locale);
-        navigator.pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const PatientShell()),
-          (route) => false,
-        );
+        
+        if (response.session == null) {
+          // Email confirmation is required
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (ctx) => AlertDialog(
+              title: const Text('Registration Successful'),
+              content: const Text('Please check your email to verify your account before logging in.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(ctx);
+                    navigator.popUntil((route) => route.isFirst); // Go back to login
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
+        } else {
+          // Already logged in
+          navigator.pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const PatientShell()),
+            (route) => false,
+          );
+        }
       }
     } catch (e) {
       if (!mounted) return;

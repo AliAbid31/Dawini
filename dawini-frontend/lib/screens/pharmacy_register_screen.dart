@@ -94,18 +94,38 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
       await _authService.createPharmacyDetails(
         ownerId: user.id,
         name: _pharmacyNameController.text.trim(),
-        address: _addressController.text.trim().isEmpty
-            ? _ownerNameController.text.trim()
-            : _addressController.text.trim(),
+        address: _addressController.text.trim(),
         licenseNumber: _licenseController.text.trim(),
       );
 
       if (!mounted) return;
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const PharmacyShell()),
-        (route) => false,
-      );
+      
+      if (response.session == null) {
+        // Email confirmation is required
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Registration Successful'),
+            content: const Text('Please check your email to verify your pharmacy account before logging in.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(ctx);
+                  Navigator.popUntil(context, (route) => route.isFirst); // Go back to login
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      } else {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const PharmacyShell()),
+          (route) => false,
+        );
+      }
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -374,6 +394,7 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
                       controller: _addressController,
                       readOnly: true,
                       onTap: _openMapPicker,
+                      validator: (value) => value == null || value.isEmpty ? 'Required field' : null,
                       decoration: InputDecoration(
                         hintText: 'Tap to select pharmacy location on map',
                         prefixIcon: const Icon(Icons.location_city_outlined, color: AppColors.textLight, size: 20),

@@ -1,15 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../core/constants/app_colors.dart';
+import '../core/api/auth_service.dart';
 import 'patient_shell.dart';
 import 'pharmacy_details.dart';
 import 'pharmacy_map_view.dart';
 
-class UserHome extends StatelessWidget {
+class UserHome extends StatefulWidget {
   const UserHome({super.key});
 
   @override
+  State<UserHome> createState() => _UserHomeState();
+}
+
+class _UserHomeState extends State<UserHome> {
+  final AuthService _authService = AuthService();
+  String _userName = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserName();
+  }
+
+  Future<void> _loadUserName() async {
+    final profile = await _authService.getUserProfile();
+    if (mounted) {
+      setState(() {
+        _userName = profile?['full_name'] ?? '';
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final displayName = _userName.isNotEmpty ? _userName : (_authService.currentUser?.email ?? 'User');
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -29,9 +55,13 @@ class UserHome extends StatelessWidget {
                         icon: const Icon(Icons.notifications_none, color: AppColors.textDark),
                         onPressed: () {},
                       ),
-                      const CircleAvatar(
+                      CircleAvatar(
                         radius: 20,
-                        backgroundImage: NetworkImage('https://i.imgur.com/Cf69I1b.png'),
+                        backgroundColor: const Color(0xFFE5F1FB),
+                        child: Text(
+                          displayName.isNotEmpty ? displayName[0].toUpperCase() : '?',
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.primary),
+                        ),
                       )
                     ],
                   )
@@ -41,7 +71,7 @@ class UserHome extends StatelessWidget {
 
               Text('welcome_back_short'.tr(), style: const TextStyle(fontSize: 14, color: AppColors.textMuted)),
               const SizedBox(height: 4),
-              Text('${'hello'.tr()}, John', style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+              Text('${'hello'.tr()}, $displayName', style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: AppColors.textDark)),
               const SizedBox(height: 24),
 
               // Barre de recherche redirigeant vers l'onglet Recherche
@@ -93,7 +123,7 @@ class UserHome extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               SizedBox(
-                height: 240,
+                height: 280,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
@@ -103,7 +133,6 @@ class UserHome extends StatelessWidget {
                       rating: '4.8',
                       distance: '0.4 miles away',
                       isOpen: true,
-                      imgUrl: 'https://i.imgur.com/83pcoXq.png',
                     ),
                     const SizedBox(width: 16),
                     _buildPharmacyCard(
@@ -112,7 +141,6 @@ class UserHome extends StatelessWidget {
                       rating: '4.5',
                       distance: '1.2 miles away',
                       isOpen: false,
-                      imgUrl: 'https://i.imgur.com/83pcoXq.png',
                     ),
                   ],
                 ),
@@ -182,7 +210,6 @@ class UserHome extends StatelessWidget {
         required String rating,
         required String distance,
         required bool isOpen,
-        required String imgUrl,
       }) {
     return GestureDetector(
       onTap: () {
@@ -198,72 +225,87 @@ class UserHome extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            // Replace broken imgur image with a styled placeholder
             ClipRRect(
               borderRadius: const BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-              child: Image.network(imgUrl, height: 110, fit: BoxFit.cover),
+              child: Container(
+                height: 110,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFFE5F1FB), Color(0xFFD1E7FD)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: const Center(
+                  child: Icon(Icons.local_pharmacy, size: 48, color: AppColors.primary),
+                ),
+              ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                        decoration: BoxDecoration(color: isOpen ? const Color(0xFFDCFCE7) : const Color(0xFFFEE2E2), borderRadius: BorderRadius.circular(8)),
-                        child: Text(isOpen ? 'OPEN NOW' : 'CLOSED', style: TextStyle(color: isOpen ? const Color(0xFF15803D) : const Color(0xFFB91C1C), fontSize: 8, fontWeight: FontWeight.bold)),
-                      ),
-                      Row(
-                        children: [
-                          const Icon(Icons.star, color: Colors.amber, size: 14),
-                          const SizedBox(width: 4),
-                          Text(rating, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textDark)),
-                        ],
-                      )
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Text(name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textDark)),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      const Icon(Icons.location_on_outlined, size: 12, color: AppColors.textLight),
-                      const SizedBox(width: 4),
-                      Text(distance, style: const TextStyle(fontSize: 11, color: AppColors.textLight)),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Color(0xFFE2E8F0)),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                          ),
-                          onPressed: () {},
-                          child: Text('call'.tr(), style: const TextStyle(fontSize: 11, color: AppColors.textDark, fontWeight: FontWeight.bold)),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          decoration: BoxDecoration(color: isOpen ? const Color(0xFFDCFCE7) : const Color(0xFFFEE2E2), borderRadius: BorderRadius.circular(8)),
+                          child: Text(isOpen ? 'OPEN NOW' : 'CLOSED', style: TextStyle(color: isOpen ? const Color(0xFF15803D) : const Color(0xFFB91C1C), fontSize: 8, fontWeight: FontWeight.bold)),
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            elevation: 0,
+                        Row(
+                          children: [
+                            const Icon(Icons.star, color: Colors.amber, size: 14),
+                            const SizedBox(width: 4),
+                            Text(rating, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+                          ],
+                        )
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        const Icon(Icons.location_on_outlined, size: 12, color: AppColors.textLight),
+                        const SizedBox(width: 4),
+                        Text(distance, style: const TextStyle(fontSize: 11, color: AppColors.textLight)),
+                      ],
+                    ),
+                    const Spacer(),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: Color(0xFFE2E8F0)),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                            ),
+                            onPressed: () {},
+                            child: Text('call'.tr(), style: const TextStyle(fontSize: 11, color: AppColors.textDark, fontWeight: FontWeight.bold)),
                           ),
-                          onPressed: () {},
-                          child: Text('directions'.tr(), style: const TextStyle(fontSize: 11, color: Colors.white, fontWeight: FontWeight.bold)),
                         ),
-                      )
-                    ],
-                  )
-                ],
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              elevation: 0,
+                            ),
+                            onPressed: () {},
+                            child: Text('directions'.tr(), style: const TextStyle(fontSize: 11, color: Colors.white, fontWeight: FontWeight.bold)),
+                          ),
+                        )
+                      ],
+                    )
+                  ],
+                ),
               ),
             )
           ],

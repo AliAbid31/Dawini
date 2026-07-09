@@ -15,6 +15,64 @@ class _UserProfileState extends State<UserProfile> {
   bool _pushNotifications = true;
   final AuthService _authService = AuthService();
 
+  late Future<Map<String, dynamic>?> _profileFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _profileFuture = _authService.getUserProfile();
+  }
+
+  void _changeLanguage() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Language / Langue'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: ctx.locale.languageCode == 'fr'
+                  ? const Icon(Icons.check, color: AppColors.primary)
+                  : null,
+              title: const Text('Français'),
+              subtitle: const Text('French'),
+              selected: ctx.locale.languageCode == 'fr',
+              onTap: () {
+                Navigator.pop(ctx);
+                _safeUpdateLanguage(ctx, 'fr');
+              },
+            ),
+            ListTile(
+              leading: ctx.locale.languageCode == 'en'
+                  ? const Icon(Icons.check, color: AppColors.primary)
+                  : null,
+              title: const Text('English'),
+              subtitle: const Text('Anglais'),
+              selected: ctx.locale.languageCode == 'en',
+              onTap: () {
+                Navigator.pop(ctx);
+                _safeUpdateLanguage(ctx, 'en');
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _safeUpdateLanguage(BuildContext dialogContext, String langCode) async {
+    try {
+      await _authService.updateLanguage(dialogContext, langCode);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Language update failed: $e')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,124 +93,150 @@ class _UserProfileState extends State<UserProfile> {
         ],
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Avatar
-              Center(
-                child: Stack(
-                  alignment: Alignment.bottomRight,
-                  children: [
-                    const CircleAvatar(
-                      radius: 54,
-                      backgroundImage: NetworkImage('https://i.imgur.com/Cf69I1b.png'),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
-                      child: const Icon(Icons.edit, color: Colors.white, size: 16),
-                    )
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-              const Text('Dr. Julian Thorne', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textDark), textAlign: TextAlign.center),
-              const SizedBox(height: 4),
-              const Text('Senior Cardiologist', style: TextStyle(fontSize: 12, color: AppColors.textLight), textAlign: TextAlign.center),
-              const SizedBox(height: 32),
+        child: FutureBuilder<Map<String, dynamic>?>(
+          future: _profileFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-              // Section Infos Personnelles
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            final profile = snapshot.data;
+            final fullName = profile?['full_name'] ?? 'Unknown User';
+            final role = profile?['role'] ?? '';
+            final roleDisplay = role.toString().toUpperCase();
+            final email = profile?['email'] ?? 'No email provided';
+            final phone = profile?['phone'] ?? 'No phone provided';
+
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text('personal_information'.tr().toUpperCase(), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textLight)),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Text('view_all'.tr(), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.primary)),
-                  )
-                ],
-              ),
-              const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20), border: Border.all(color: const Color(0xFFE2E8F0))),
-                child: Column(
-                  children: [
-                    _buildInfoRow('Full Name', 'Julian Thorne'),
-                    const Divider(color: Color(0xFFF1F5F9)),
-                    _buildInfoRow('Email Address', 'j.thorne@clinic.com'),
-                    const Divider(color: Color(0xFFF1F5F9)),
-                    _buildInfoRow('Phone Number', '+1 (555) 012-3456'),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 32),
+                  // Avatar
+                  Center(
+                    child: Stack(
+                      alignment: Alignment.bottomRight,
+                      children: [
+                        CircleAvatar(
+                          radius: 54,
+                          backgroundColor: const Color(0xFFE5F1FB),
+                          child: Text(
+                            fullName.isNotEmpty ? fullName[0].toUpperCase() : '?',
+                            style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: AppColors.primary),
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
+                          child: const Icon(Icons.edit, color: Colors.white, size: 16),
+                        )
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(fullName, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textDark), textAlign: TextAlign.center),
+                  const SizedBox(height: 4),
+                  Text(roleDisplay, style: const TextStyle(fontSize: 12, color: AppColors.textLight), textAlign: TextAlign.center),
+                  const SizedBox(height: 32),
+
+                  // Section Infos Personnelles
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('personal_information'.tr().toUpperCase(), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textLight)),
+                      GestureDetector(
+                        onTap: () {},
+                        child: Text('view_all'.tr(), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.primary)),
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20), border: Border.all(color: const Color(0xFFE2E8F0))),
+                    child: Column(
+                      children: [
+                        _buildInfoRow('Full Name', fullName),
+                        const Divider(color: Color(0xFFF1F5F9)),
+                        _buildInfoRow('Email Address', email),
+                        const Divider(color: Color(0xFFF1F5F9)),
+                        _buildInfoRow('Phone Number', phone),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 32),
 
               // Section Paramètres
-              Text('account_settings'.tr().toUpperCase(), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textLight)),
-              const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20), border: Border.all(color: const Color(0xFFE2E8F0))),
-                child: Column(
-                  children: [
-                    _buildSettingRow(Icons.lock_outline, 'change_password'.tr(), const Icon(Icons.chevron_right, color: AppColors.textLight)),
-                    const Divider(color: Color(0xFFF1F5F9)),
-                    _buildSettingRow(
-                      Icons.notifications_outlined,
-                      'push_notifications'.tr(),
-                      Switch(
-                        value: _pushNotifications,
-                        activeThumbColor: AppColors.primary,
-                        onChanged: (val) => setState(() => _pushNotifications = val),
-                      ),
+                  Text('account_settings'.tr().toUpperCase(), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textLight)),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20), border: Border.all(color: const Color(0xFFE2E8F0))),
+                    child: Column(
+                      children: [
+                        _buildSettingRow(Icons.lock_outline, 'change_password'.tr(), const Icon(Icons.chevron_right, color: AppColors.textLight)),
+                        const Divider(color: Color(0xFFF1F5F9)),
+                        _buildSettingRow(
+                          Icons.notifications_outlined,
+                          'push_notifications'.tr(),
+                          Switch(
+                            value: _pushNotifications,
+                            activeThumbColor: AppColors.primary,
+                            onChanged: (val) => setState(() => _pushNotifications = val),
+                          ),
+                        ),
+                        const Divider(color: Color(0xFFF1F5F9)),
+                        GestureDetector(
+                          onTap: _changeLanguage,
+                          child: _buildSettingRow(
+                            Icons.translate,
+                            'language'.tr(),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  context.locale.languageCode == 'fr' ? 'Français' : 'English',
+                                  style: const TextStyle(fontSize: 11, color: AppColors.textLight),
+                                ),
+                                const SizedBox(width: 4),
+                                const Icon(Icons.chevron_right, color: AppColors.textLight, size: 16),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    const Divider(color: Color(0xFFF1F5F9)),
-                    _buildSettingRow(
-                      Icons.translate,
-                      'language'.tr(),
-                      const Row(
+                  ),
+                  const SizedBox(height: 32),
+
+                  // Bouton Déconnexion
+                  SizedBox(
+                    height: 52,
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Color(0xFFFEE2E2)),
+                        backgroundColor: const Color(0xFFFEF2F2),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                      ),
+                      onPressed: () {
+                        _authService.signOut();
+                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const LoginScreen()), (route) => false);
+                      },
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('English', style: TextStyle(fontSize: 11, color: AppColors.textLight)),
-                          SizedBox(width: 4),
-                          Icon(Icons.chevron_right, color: AppColors.textLight, size: 16),
+                          Icon(Icons.logout, color: Color(0xFFB91C1C), size: 18),
+                          SizedBox(width: 8),
+                          Text('logout', style: TextStyle(color: Color(0xFFB91C1C), fontSize: 15, fontWeight: FontWeight.bold)),
                         ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 32),
-
-              // Bouton Déconnexion
-              SizedBox(
-                height: 52,
-                child: OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Color(0xFFFEE2E2)),
-                    backgroundColor: const Color(0xFFFEF2F2),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
                   ),
-                  onPressed: () {
-                    // Reset et retour à la connexion
-                    _authService.signOut();
-                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const LoginScreen()), (route) => false);
-                  },
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.logout, color: Color(0xFFB91C1C), size: 18),
-                      SizedBox(width: 8),
-                      Text('logout', style: TextStyle(color: Color(0xFFB91C1C), fontSize: 15, fontWeight: FontWeight.bold)),
-                    ],
-                  ),
-                ),
+                  const SizedBox(height: 40),
+                ],
               ),
-              const SizedBox(height: 40),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );

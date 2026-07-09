@@ -25,19 +25,25 @@ class StockAlert(BaseModel):
 
 @router.post("/details", status_code=status.HTTP_201_CREATED)
 async def create_patient_details(patient: Patient):
-    profile = supabase.table("profiles").select("id").eq("id", patient.profile_id).execute()
-    if not profile.data:
-        raise HTTPException(
-            status_code=400,
-            detail="Profile not found. Call /api/v1/auth/sync-profile first."
-        )
     try:
-        response = supabase.table("patients").upsert({
+        profile = supabase.table("profiles").select("id").eq("id", patient.profile_id).execute()
+        if not profile.data:
+            raise HTTPException(
+                status_code=400,
+                detail="Profile not found. Call /api/v1/auth/sync-profile first."
+            )
+
+        existing = supabase.table("patients").select("id").eq("profile_id", patient.profile_id).execute()
+        payload = {
             "profile_id": patient.profile_id,
             "location": patient.location,
             "birth_date": patient.birth_date.isoformat() if patient.birth_date else None,
             "gender": patient.gender
-        }, on_conflict="profile_id").execute()
+        }
+        if existing.data:
+            response = supabase.table("patients").update(payload).eq("id", existing.data[0]["id"]).execute()
+        else:
+            response = supabase.table("patients").insert(payload).execute()
         if not response.data:
             raise HTTPException(status_code=400, detail="Information Creation failed.")
         return {"success": True, "patient": response.data[0]}
