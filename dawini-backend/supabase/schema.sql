@@ -31,6 +31,12 @@ create table if not exists public.pharmacies (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.admins (
+  id uuid primary key default gen_random_uuid(),
+  profile_id uuid not null unique references public.profiles(id) on delete cascade,
+  created_at timestamptz not null default now()
+);
+
 create table if not exists public.medicines (
   id uuid primary key default gen_random_uuid(),
   name text not null,
@@ -98,6 +104,7 @@ for each row execute procedure public.handle_new_user();
 
 alter table public.profiles enable row level security;
 alter table public.patients enable row level security;
+alter table public.admins enable row level security;
 alter table public.pharmacies enable row level security;
 alter table public.medicines enable row level security;
 alter table public.inventory enable row level security;
@@ -154,6 +161,14 @@ for all
 using (auth.uid() = profile_id)
 with check (auth.uid() = profile_id);
 
+-- Admin details: owner only
+drop policy if exists "admins_self" on public.admins;
+create policy "admins_self"
+on public.admins
+for all
+using (auth.uid() = profile_id)
+with check (auth.uid() = profile_id);
+
 -- Pharmacies: owner manages, everyone can read
 drop policy if exists "pharmacies_select" on public.pharmacies;
 create policy "pharmacies_select"
@@ -180,3 +195,77 @@ create policy "medicines_read"
 on public.medicines
 for select
 using (true);
+
+-- ---------------------------------------------------------------------------
+-- Admin full access
+-- ---------------------------------------------------------------------------
+
+-- Helper: returns true when the current user is an admin.
+-- security definer -> bypasses RLS on profiles to avoid infinite recursion
+-- when this function is called from a policy defined on profiles itself.
+create or replace function public.is_admin()
+returns boolean as $$
+  select exists (
+    select 1
+    from public.profiles
+    where id = auth.uid()
+      and role = 'admin'
+  );
+$$ language sql security definer stable;
+
+-- Admins can read and manage every table.
+drop policy if exists "admin_all_profiles" on public.profiles;
+create policy "admin_all_profiles"
+on public.profiles
+for all
+using (public.is_admin())
+with check (public.is_admin());
+
+drop policy if exists "admin_all_patients" on public.patients;
+create policy "admin_all_patients"
+on public.patients
+for all
+using (public.is_admin())
+with check (public.is_admin());
+
+drop policy if exists "admin_all_admins" on public.admins;
+create policy "admin_all_admins"
+on public.admins
+for all
+using (public.is_admin())
+with check (public.is_admin());
+
+drop policy if exists "admin_all_pharmacies" on public.pharmacies;
+create policy "admin_all_pharmacies"
+on public.pharmacies
+for all
+using (public.is_admin())
+with check (public.is_admin());
+
+drop policy if exists "admin_all_medicines" on public.medicines;
+create policy "admin_all_medicines"
+on public.medicines
+for all
+using (public.is_admin())
+with check (public.is_admin());
+
+drop policy if exists "admin_all_inventory" on public.inventory;
+create policy "admin_all_inventory"
+on public.inventory
+for all
+using (public.is_admin())
+with check (public.is_admin());
+
+drop policy if exists "admin_all_requests" on public.requests;
+create policy "admin_all_requests"
+on public.requests
+for all
+using (public.is_admin())
+with check (public.is_admin());
+
+drop policy if exists "admin_all_alerts" on public.alerts;
+create policy "admin_all_alerts"
+on public.alerts
+for all
+using (public.is_admin())
+with check (public.is_admin());
