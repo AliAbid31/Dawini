@@ -67,7 +67,7 @@ class _UserProfileState extends State<UserProfile> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Language update failed: $e')),
+          SnackBar(content: Text('language_update_failed'.tr() + ': $e')),
         );
       }
     }
@@ -101,11 +101,11 @@ class _UserProfileState extends State<UserProfile> {
             }
 
             final profile = snapshot.data;
-            final fullName = profile?['full_name'] ?? 'Unknown User';
+            final fullName = profile?['full_name'] ?? 'unknown_user'.tr();
             final role = profile?['role'] ?? '';
             final roleDisplay = role.toString().toUpperCase();
-            final email = profile?['email'] ?? 'No email provided';
-            final phone = profile?['phone'] ?? 'No phone provided';
+            final email = profile?['email'] ?? 'no_email_provided'.tr();
+            final phone = profile?['phone'] ?? 'no_phone_provided'.tr();
 
             return SingleChildScrollView(
               padding: const EdgeInsets.all(24.0),
@@ -156,11 +156,11 @@ class _UserProfileState extends State<UserProfile> {
                     decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20), border: Border.all(color: const Color(0xFFE2E8F0))),
                     child: Column(
                       children: [
-                        _buildInfoRow('Full Name', fullName),
+                        _buildInfoRow('full_name'.tr(), fullName),
                         const Divider(color: Color(0xFFF1F5F9)),
-                        _buildInfoRow('Email Address', email),
+                        _buildInfoRow('email_address'.tr(), email),
                         const Divider(color: Color(0xFFF1F5F9)),
-                        _buildInfoRow('Phone Number', phone),
+                        _buildInfoRow('phone_number'.tr(), phone),
                       ],
                     ),
                   ),
@@ -222,12 +222,12 @@ class _UserProfileState extends State<UserProfile> {
                         _authService.signOut();
                         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const LoginScreen()), (route) => false);
                       },
-                      child: const Row(
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.logout, color: Color(0xFFB91C1C), size: 18),
                           SizedBox(width: 8),
-                          Text('logout', style: TextStyle(color: Color(0xFFB91C1C), fontSize: 15, fontWeight: FontWeight.bold)),
+                          Text('logout'.tr(), style: TextStyle(color: Color(0xFFB91C1C), fontSize: 15, fontWeight: FontWeight.bold)),
                         ],
                       ),
                     ),

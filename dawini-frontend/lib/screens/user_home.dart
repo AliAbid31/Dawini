@@ -179,9 +179,9 @@ class _UserHomeState extends State<UserHome> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(color: const Color(0xFF1E3A8A), borderRadius: BorderRadius.circular(10)),
-                child: const Text('PRIORITY', style: TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold)),
+                child: Text('priority'.tr(), style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold)),
               ),
-              const Text('Due in 15 mins', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+              Text('due_in_15_mins'.tr(), style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
             ],
           ),
           const SizedBox(height: 16),
@@ -197,7 +197,7 @@ class _UserHomeState extends State<UserHome> {
               elevation: 0,
             ),
             onPressed: () {},
-            child: const Text('Mark as Taken', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            child: Text('mark_as_taken'.tr(), style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
           )
         ],
       ),

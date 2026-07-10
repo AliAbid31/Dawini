@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:country_picker/country_picker.dart';
 
 void showCustomCountryPicker({
@@ -57,7 +58,7 @@ void showCustomCountryPicker({
                     }
                   },
                   decoration: InputDecoration(
-                    hintText: 'Search country...',
+                    hintText: 'search_country'.tr(),
                     prefixIcon: const Icon(Icons.search, size: 20),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),

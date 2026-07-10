@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../core/constants/app_colors.dart';
 import 'patient_shell.dart';
 
@@ -16,7 +17,7 @@ class ConfirmationRequest extends StatelessWidget {
           icon: const Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Dawini', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18)),
+        title: Text('app_title'.tr(), style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18)),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_none, color: AppColors.textLight),
@@ -30,9 +31,9 @@ class ConfirmationRequest extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text('Confirmation Request', style: TextStyle(fontSize: 12, color: AppColors.textLight)),
+              Text('confirmation_request'.tr(), style: TextStyle(fontSize: 12, color: AppColors.textLight)),
               const SizedBox(height: 4),
-              const Text('Secure Availability', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+              Text('secure_availability'.tr(), style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.textDark)),
               const SizedBox(height: 24),
 
               // Carte de détails de demande
@@ -76,13 +77,13 @@ class ConfirmationRequest extends StatelessWidget {
                           child: const Icon(Icons.storefront, color: AppColors.primary, size: 18),
                         ),
                         const SizedBox(width: 12),
-                        const Expanded(
+                        Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Pharmacy', style: TextStyle(fontSize: 10, color: AppColors.textLight)),
-                              SizedBox(height: 2),
-                              Text('City Health Pharmacy Center', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+                              Text('pharmacy'.tr(), style: const TextStyle(fontSize: 10, color: AppColors.textLight)),
+                              const SizedBox(height: 2),
+                              const Text('City Health Pharmacy Center', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppColors.textDark)),
                             ],
                           ),
                         )
@@ -127,12 +128,12 @@ class ConfirmationRequest extends StatelessWidget {
                                 (route) => false,
                           );
                         },
-                        child: const Row(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text('Request Availability', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white)),
-                            SizedBox(width: 8),
-                            Icon(Icons.send_outlined, color: Colors.white, size: 14),
+                            Text('request_availability'.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white)),
+                            const SizedBox(width: 8),
+                            const Icon(Icons.send_outlined, color: Colors.white, size: 14),
                           ],
                         ),
                       ),
@@ -145,8 +146,8 @@ class ConfirmationRequest extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Recent Requests', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textDark)),
-                  TextButton(onPressed: () {}, child: const Text('View All', style: TextStyle(color: AppColors.primary, fontSize: 12))),
+                  Text('recent_requests'.tr(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+                  TextButton(onPressed: () {}, child: Text('view_all'.tr(), style: TextStyle(color: AppColors.primary, fontSize: 12))),
                 ],
               ),
               _recentItem('Amoxicillin 500mg', 'Metro Pharma', 'To be confirmed', const Color(0xFF3B82F6), const Color(0xFFEFF6FF)),

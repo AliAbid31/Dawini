@@ -71,9 +71,9 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
         _selectedLng = locatedAddress.longitude;
         _locationController.text = locatedAddress.displayName;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Location detected successfully')),
-      );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('location_detected'.tr())),
+        );
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -111,9 +111,9 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
     if (!_formKey.currentState!.validate()) return;
     if (!_agreeTerms) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('You must accept the terms of service')),
-      );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('accept_terms_required'.tr())),
+        );
       return;
     }
 
@@ -161,15 +161,15 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
             context: context,
             barrierDismissible: false,
             builder: (ctx) => AlertDialog(
-              title: const Text('Registration Successful'),
-              content: const Text('Please check your email to verify your account before logging in.'),
+              title: Text('registration_successful'.tr()),
+              content: Text('check_email_verify'.tr()),
               actions: [
                 TextButton(
                   onPressed: () {
                     Navigator.pop(ctx);
                     navigator.popUntil((route) => route.isFirst); // Go back to login
                   },
-                  child: const Text('OK'),
+                  child: Text('ok'.tr()),
                 ),
               ],
             ),
@@ -205,7 +205,7 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
           icon: const Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Dawini', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18)),
+        title: Text('app_title'.tr(), style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18)),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -216,15 +216,15 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SizedBox(height: 16),
-                const Text(
-                  'Patient Registration',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.textDark),
+                Text(
+                  'patient_registration'.tr(),
+                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.textDark),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  'Join Dawini and take control of your healthcare journey with trust and precision.',
-                  style: TextStyle(fontSize: 12, color: AppColors.textMuted, height: 1.4),
+                Text(
+                  'patient_registration_desc'.tr(),
+                  style: const TextStyle(fontSize: 12, color: AppColors.textMuted, height: 1.4),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32),
@@ -244,28 +244,28 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      _inputLabel('Full Name'),
+                      _inputLabel('full_name'.tr()),
                       TextFormField(
                         controller: _nameController,
-                        validator: (value) => value == null || value.isEmpty ? 'Required field' : null,
+                        validator: (value) => value == null || value.isEmpty ? 'required_field'.tr() : null,
                         decoration: const InputDecoration(
                           hintText: 'John Doe',
                           prefixIcon: Icon(Icons.person_outline, color: AppColors.textLight, size: 20),
                         ),
                       ),
                       const SizedBox(height: 16),
-                      _inputLabel('Email Address'),
+                      _inputLabel('email_address'.tr()),
                       TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
-                        validator: (value) => value == null || !value.contains('@') ? 'Invalid email' : null,
+                        validator: (value) => value == null || !value.contains('@') ? 'enter_valid_email'.tr() : null,
                         decoration: const InputDecoration(
                           hintText: 'name@example.com',
                           prefixIcon: Icon(Icons.mail_outline, color: AppColors.textLight, size: 20),
                         ),
                       ),
                       const SizedBox(height: 16),
-                      _inputLabel('Phone Number'),
+                      _inputLabel('phone_number'.tr()),
                       Row(
                         children: [
                           GestureDetector(
@@ -299,7 +299,7 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
                             child: TextFormField(
                               controller: _phoneController,
                               keyboardType: TextInputType.phone,
-                              validator: (value) => value == null || value.isEmpty ? 'Required field' : null,
+                              validator: (value) => value == null || value.isEmpty ? 'required_field'.tr() : null,
                               decoration: const InputDecoration(
                                 hintText: '000-0000',
                                 prefixIcon: Icon(Icons.phone_outlined, color: AppColors.textLight, size: 20),
@@ -309,11 +309,11 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
                         ],
                       ),
                       const SizedBox(height: 16),
-                      _inputLabel('Password'),
+                      _inputLabel('password'.tr()),
                       TextFormField(
                         controller: _passwordController,
                         obscureText: _obscurePassword,
-                        validator: (value) => value == null || value.length < 6 ? 'Too short' : null,
+                        validator: (value) => value == null || value.length < 6 ? 'password_min_length'.tr() : null,
                         decoration: InputDecoration(
                           hintText: '••••••••',
                           prefixIcon: const Icon(Icons.lock_outline, color: AppColors.textLight, size: 20),
@@ -332,12 +332,12 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      _inputLabel('Birth Date'),
+                      _inputLabel('birth_date'.tr()),
                       TextFormField(
                         controller: _birthDateController,
                         readOnly: true,
                         onTap: _pickBirthDate,
-                        validator: (value) => value == null || value.isEmpty ? 'Required field' : null,
+                        validator: (value) => value == null || value.isEmpty ? 'required_field'.tr() : null,
                         decoration: InputDecoration(
                           hintText: 'YYYY-MM-DD',
                           prefixIcon: const Icon(Icons.event_outlined, color: AppColors.textLight, size: 20),
@@ -348,22 +348,22 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      _inputLabel('Gender'),
+                      _inputLabel('gender'.tr()),
                       DropdownButtonFormField<String>(
                         initialValue: _selectedGender,
-                        items: const [
-                          DropdownMenuItem(value: 'M', child: Text('Male')),
-                          DropdownMenuItem(value: 'F', child: Text('Female')),
+                        items: [
+                          DropdownMenuItem(value: 'M', child: Text('male'.tr())),
+                          DropdownMenuItem(value: 'F', child: Text('female'.tr())),
                         ],
                         onChanged: (value) => setState(() => _selectedGender = value),
-                        validator: (value) => value == null ? 'Required field' : null,
-                        decoration: const InputDecoration(
-                          hintText: 'Select gender',
-                          prefixIcon: Icon(Icons.wc_outlined, color: AppColors.textLight, size: 20),
+                        validator: (value) => value == null ? 'required_field'.tr() : null,
+                        decoration: InputDecoration(
+                          hintText: 'select_gender'.tr(),
+                          prefixIcon: const Icon(Icons.wc_outlined, color: AppColors.textLight, size: 20),
                         ),
                       ),
                       const SizedBox(height: 16),
-                      _inputLabel('Location'),
+                      _inputLabel('location'.tr()),
                       Row(
                         children: [
                           Expanded(
@@ -371,9 +371,9 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
                               controller: _locationController,
                               readOnly: true,
                               onTap: _openMapPicker,
-                              validator: (value) => value == null || value.isEmpty ? 'Required field' : null,
+                              validator: (value) => value == null || value.isEmpty ? 'required_field'.tr() : null,
                               decoration: InputDecoration(
-                                hintText: 'Select your location',
+                                hintText: 'select_your_location'.tr(),
                                 prefixIcon: const Icon(Icons.location_on_outlined, color: AppColors.textLight, size: 20),
                                 suffixIcon: IconButton(
                                   icon: const Icon(Icons.open_in_new, color: AppColors.primary, size: 18),
@@ -421,10 +421,10 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
                             ),
                           ),
                           const SizedBox(width: 8),
-                          const Expanded(
+                          Expanded(
                             child: Text(
-                              'I agree to the Terms of Service and Privacy Policy.',
-                              style: TextStyle(fontSize: 11, color: AppColors.textMuted, height: 1.4),
+                              'agree_terms'.tr(),
+                              style: const TextStyle(fontSize: 11, color: AppColors.textMuted, height: 1.4),
                             ),
                           )
                         ],
@@ -441,10 +441,10 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
                             elevation: 0,
                           ),
                           onPressed: _handleRegister,
-                          child: const Row(
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text('Register', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                              Text('register'.tr(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                               SizedBox(width: 8),
                               Icon(Icons.arrow_forward, color: Colors.white, size: 18),
                             ],
@@ -455,12 +455,12 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text('Already have an account? ', style: TextStyle(color: AppColors.textMuted, fontSize: 12)),
+                          Text('already_account'.tr(), style: TextStyle(color: AppColors.textMuted, fontSize: 12)),
                           GestureDetector(
                             onTap: () {
                               Navigator.popUntil(context, (route) => route.isFirst);
                             },
-                            child: const Text('Sign In', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 12)),
+                            child: Text('sign_in_link'.tr(), style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 12)),
                           ),
                         ],
                       )
@@ -468,9 +468,9 @@ class _PatientRegisterScreenState extends State<PatientRegisterScreen> {
                   ),
                 ),
                 const SizedBox(height: 32),
-                const Text(
-                  'By joining Dawini, you agree to our Terms of Service and Privacy Policy.',
-                  style: TextStyle(fontSize: 10, color: AppColors.textLight, height: 1.4),
+                Text(
+                  'terms_agreement_text'.tr(),
+                  style: const TextStyle(fontSize: 10, color: AppColors.textLight, height: 1.4),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 40),

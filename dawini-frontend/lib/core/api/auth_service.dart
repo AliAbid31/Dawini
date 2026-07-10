@@ -108,17 +108,17 @@ class AuthService {
   }
 
   Future<void> updateLanguage(BuildContext context, String langCode) async {
+    if (context.mounted) {
+      await context.setLocale(Locale(langCode));
+    }
     try {
       final supabase = _supabase;
       final user = currentUser;
       if (user != null && supabase != null) {
         await supabase.from('profiles').update({'preferred_language': langCode}).eq('id', user.id);
       }
-      if (context.mounted) {
-        await context.setLocale(Locale(langCode));
-      }
     } catch (e) {
-      debugPrint('Failed to update language: $e');
+      debugPrint('Failed to persist language preference: $e');
     }
   }
 

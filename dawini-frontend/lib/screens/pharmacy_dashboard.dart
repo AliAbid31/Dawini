@@ -107,11 +107,11 @@ class _PharmacyDashboardState extends State<PharmacyDashboard> {
         children: [
           Text('todays_activity'.tr(), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF1E293B))),
           const SizedBox(height: 16),
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('45 Completed', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF1E293B))),
-              Text('+8% vs yesterday', style: TextStyle(fontSize: 11, color: Colors.green, fontWeight: FontWeight.bold)),
+              Text('completed_count'.tr(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF1E293B))),
+              Text('vs_yesterday'.tr(), style: TextStyle(fontSize: 11, color: Colors.green, fontWeight: FontWeight.bold)),
             ],
           )
         ],

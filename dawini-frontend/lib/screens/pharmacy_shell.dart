@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../core/constants/app_colors.dart';
 import 'pharmacy_dashboard.dart';
 import 'inventory_management.dart';
@@ -51,10 +52,10 @@ class PharmacyShellState extends State<PharmacyShell> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _buildNavItem(0, Icons.home_outlined, Icons.home, 'Home'),
-            _buildNavItem(1, Icons.inventory_2_outlined, Icons.inventory_2, 'Inventory'),
-            _buildNavItem(2, Icons.assignment_outlined, Icons.assignment, 'Requests'),
-            _buildNavItem(3, Icons.notifications_none, Icons.notifications, 'Alerts'),
+            _buildNavItem(0, Icons.home_outlined, Icons.home, 'nav_home'.tr()),
+            _buildNavItem(1, Icons.inventory_2_outlined, Icons.inventory_2, 'nav_inventory'.tr()),
+            _buildNavItem(2, Icons.assignment_outlined, Icons.assignment, 'nav_requests'.tr()),
+            _buildNavItem(3, Icons.notifications_none, Icons.notifications, 'nav_alerts'.tr()),
           ],
         ),
       ),

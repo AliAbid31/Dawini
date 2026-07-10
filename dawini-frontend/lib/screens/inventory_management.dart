@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../core/constants/app_colors.dart';
 import 'add_edit_stock.dart';
 
@@ -13,7 +14,7 @@ class InventoryManagement extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(icon: const Icon(Icons.arrow_back, color: AppColors.primary), onPressed: () {}),
-        title: const Text('Dawini', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18)),
+        title: Text('app_title'.tr(), style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18)),
         actions: [
           IconButton(icon: const Icon(Icons.notifications_none, color: AppColors.textLight), onPressed: () {}),
         ],
@@ -24,16 +25,16 @@ class InventoryManagement extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Inventory Management', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+              Text('inventory_management'.tr(), style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.textDark)),
               const SizedBox(height: 4),
-              const Text('Manage stock levels and medicine availability for your pharmacy.', style: TextStyle(fontSize: 12, color: AppColors.textLight)),
+              Text('manage_stock'.tr(), style: TextStyle(fontSize: 12, color: AppColors.textLight)),
               const SizedBox(height: 24),
 
               // Barre de recherche
-              const TextField(
+              TextField(
                 decoration: InputDecoration(
-                  hintText: 'Search medicines, salts, or brands...',
-                  prefixIcon: Icon(Icons.search, color: AppColors.textLight),
+                  hintText: 'search_medicines_hint'.tr(),
+                  prefixIcon: const Icon(Icons.search, color: AppColors.textLight),
                 ),
               ),
               const SizedBox(height: 24),
@@ -124,11 +125,11 @@ class InventoryManagement extends StatelessWidget {
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const AddEditStock()));
                 },
-                child: const Row(
+                child: Row(
                   children: [
-                    Text('Edit', style: TextStyle(fontSize: 10, color: AppColors.primary, fontWeight: FontWeight.bold)),
-                    SizedBox(width: 2),
-                    Icon(Icons.edit, size: 10, color: AppColors.primary),
+                    Text('edit'.tr(), style: const TextStyle(fontSize: 10, color: AppColors.primary, fontWeight: FontWeight.bold)),
+                    const SizedBox(width: 2),
+                    const Icon(Icons.edit, size: 10, color: AppColors.primary),
                   ],
                 ),
               )

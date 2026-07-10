@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../core/constants/app_colors.dart';
 import 'medicine_details.dart';
 import '../core/api/api_client.dart';
@@ -42,7 +43,7 @@ class _MedicineSearchState extends State<MedicineSearch> {
           icon: const Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () {},
         ),
-        title: const Text('Dawini', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18)),
+        title: Text('app_title'.tr(), style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18)),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_none, color: AppColors.textLight),
@@ -56,7 +57,7 @@ class _MedicineSearchState extends State<MedicineSearch> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Find your medicine', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+              Text('find_your_medicine'.tr(), style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.textDark)),
               const SizedBox(height: 16),
 
               // Barre de saisie
@@ -85,11 +86,11 @@ class _MedicineSearchState extends State<MedicineSearch> {
               ),
               const SizedBox(height: 24),
 
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Available Results', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textDark)),
-                  Text('12 Pharmacies found', style: TextStyle(fontSize: 11, color: AppColors.textLight)),
+                  Text('available_results'.tr(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+                  Text('pharmacies_found'.tr(), style: TextStyle(fontSize: 11, color: AppColors.textLight)),
                 ],
               ),
               const SizedBox(height: 16),
@@ -100,9 +101,9 @@ class _MedicineSearchState extends State<MedicineSearch> {
                   child: Center(child: CircularProgressIndicator()),
                 )
               else if (medicines.isEmpty)
-                const Padding(
+                Padding(
                   padding: EdgeInsets.symmetric(vertical: 24),
-                  child: Text('No medicines found yet.', style: TextStyle(color: AppColors.textLight)),
+                  child: Text('no_medicines_found'.tr(), style: TextStyle(color: AppColors.textLight)),
                 )
               else
                 ...medicines.map((m) {
@@ -122,12 +123,12 @@ class _MedicineSearchState extends State<MedicineSearch> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Pharmacies Nearby', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+                  Text('pharmacies_nearby_title'.tr(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textDark)),
                   TextButton(
                     onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => const PharmacyMapView()));
                     },
-                    child: const Text('View Map', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 12)),
+                    child: Text('view_on_map'.tr(), style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 12)),
                   )
                 ],
               ),
@@ -248,14 +249,14 @@ class _MedicineSearchState extends State<MedicineSearch> {
                 child: const Icon(Icons.directions_walk, color: AppColors.primary, size: 20),
               ),
               const SizedBox(width: 12),
-              const Expanded(
+              Expanded(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('3 Pharmacies', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+                    Text('pharmacies_found'.tr(), style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.textDark)),
                     SizedBox(height: 2),
-                    Text('Within 10 mins walk', style: TextStyle(fontSize: 10, color: AppColors.textLight)),
+                    Text('within_10_mins'.tr(), style: TextStyle(fontSize: 10, color: AppColors.textLight)),
                   ],
                 ),
               ),
@@ -269,7 +270,7 @@ class _MedicineSearchState extends State<MedicineSearch> {
                 onPressed: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const PharmacyMapView()));
                 },
-                child: const Text('View on Map', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white)),
+                child: Text('view_on_map'.tr(), style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white)),
               )
             ],
           ),

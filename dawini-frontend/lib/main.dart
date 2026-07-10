@@ -27,6 +27,7 @@ Future<void> main() async {
       supportedLocales: const [Locale('fr'), Locale('en')],
       path: 'assets/lang',
       fallbackLocale: const Locale('fr'),
+      startLocale: const Locale('fr'),
       child: const DawiniApp(),
     ),
   );

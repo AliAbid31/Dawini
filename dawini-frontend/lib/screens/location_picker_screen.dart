@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import '../core/services/location_service.dart';
@@ -155,11 +156,11 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
           icon: const Icon(Icons.arrow_back, color: AppColors.textDark),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Select Location', style: TextStyle(color: AppColors.textDark, fontSize: 16, fontWeight: FontWeight.bold)),
+        title: Text('select_location'.tr(), style: TextStyle(color: AppColors.textDark, fontSize: 16, fontWeight: FontWeight.bold)),
         actions: [
           TextButton(
             onPressed: _selectedAddress.isEmpty ? null : _confirm,
-            child: const Text('Confirm', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary)),
+            child: Text('confirm'.tr(), style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary)),
           ),
         ],
       ),
@@ -178,7 +179,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                       focusNode: _searchFocus,
                       onChanged: _onSearchChanged,
                       decoration: InputDecoration(
-                        hintText: 'Search address or place...',
+                        hintText: 'search_address_hint'.tr(),
                         hintStyle: const TextStyle(fontSize: 13, color: AppColors.textLight),
                         prefixIcon: Icon(_isLoadingAddress ? null : Icons.search, color: AppColors.textLight, size: 20),
                         suffixIcon: _isSearching
@@ -319,7 +320,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                     elevation: 0,
                   ),
                   onPressed: _selectedAddress.isEmpty ? null : _confirm,
-                  child: const Text('Confirm Location', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                  child: Text('confirm_location'.tr(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                 ),
               ),
             ),

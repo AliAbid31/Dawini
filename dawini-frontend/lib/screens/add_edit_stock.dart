@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../core/constants/app_colors.dart';
 
 class AddEditStock extends StatefulWidget {
@@ -19,7 +20,7 @@ class _AddEditStockState extends State<AddEditStock> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(icon: const Icon(Icons.arrow_back, color: AppColors.primary), onPressed: () => Navigator.pop(context)),
-        title: const Text('Edit Inventory', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18)),
+        title: Text('edit_inventory_title'.tr(), style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18)),
         actions: [
           IconButton(icon: const Icon(Icons.notifications_none, color: AppColors.textLight), onPressed: () {}),
         ],
@@ -38,13 +39,13 @@ class _AddEditStockState extends State<AddEditStock> {
                   children: [
                     Container(width: 44, height: 44, decoration: BoxDecoration(color: const Color(0xFFF1F5F9), borderRadius: BorderRadius.circular(12)), child: const Icon(Icons.library_books, color: AppColors.primary)),
                     const SizedBox(width: 16),
-                    const Expanded(
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Medicine Details', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textDark)),
-                          SizedBox(height: 4),
-                          Text('Update the availability and categorization of pharmaceutical products in your local stock.', style: TextStyle(fontSize: 11, color: AppColors.textLight, height: 1.4)),
+                          Text('medicine_details_title'.tr(), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+                          const SizedBox(height: 4),
+                          Text('medicine_details_desc'.tr(), style: const TextStyle(fontSize: 11, color: AppColors.textLight, height: 1.4)),
                         ],
                       ),
                     )
@@ -54,17 +55,17 @@ class _AddEditStockState extends State<AddEditStock> {
               const SizedBox(height: 24),
 
               // Champ Nom
-              _label('Medicine Name'),
-              const TextField(
+              _label('medicine_name'.tr()),
+              TextField(
                 decoration: InputDecoration(
-                  hintText: 'e.g. Paracetamol 500mg',
-                  prefixIcon: Icon(Icons.search, size: 20),
+                  hintText: 'medicine_name_hint'.tr(),
+                  prefixIcon: const Icon(Icons.search, size: 20),
                 ),
               ),
               const SizedBox(height: 16),
 
               // Sélecteur Catégorie
-              _label('Category'),
+              _label('category'.tr()),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: const Color(0xFFE2E8F0))),
@@ -83,18 +84,18 @@ class _AddEditStockState extends State<AddEditStock> {
               const SizedBox(height: 24),
 
               // Statut d'inventaire
-              _label('Current Stock Status'),
-              _statusOption(0, Icons.check_circle, 'Available', 'High Priority', const Color(0xFF15803D), const Color(0xFFDCFCE7), const Color(0xFFE5F1FB)),
-              _statusOption(1, Icons.warning, 'Weak Stock', 'Re-order Soon', const Color(0xFFD97706), const Color(0xFFFEF3C7), const Color(0xFFFFF7ED)),
-              _statusOption(2, Icons.cancel, 'Unavailable', 'Out of Stock', const Color(0xFFB91C1C), const Color(0xFFFEE2E2), const Color(0xFFFEF2F2)),
+              _label('current_stock_status'.tr()),
+              _statusOption(0, Icons.check_circle, 'available'.tr(), 'high_priority'.tr(), const Color(0xFF15803D), const Color(0xFFDCFCE7), const Color(0xFFE5F1FB)),
+              _statusOption(1, Icons.warning, 'weak_stock'.tr(), 'reorder_soon'.tr(), const Color(0xFFD97706), const Color(0xFFFEF3C7), const Color(0xFFFFF7ED)),
+              _statusOption(2, Icons.cancel, 'unavailable'.tr(), 'out_of_stock'.tr(), const Color(0xFFB91C1C), const Color(0xFFFEE2E2), const Color(0xFFFEF2F2)),
               const SizedBox(height: 16),
 
               // Notes complémentaires
-              _label('Additional Notes'),
-              const TextField(
+              _label('additional_notes'.tr()),
+              TextField(
                 maxLines: 3,
                 decoration: InputDecoration(
-                  hintText: 'Mention shelf location or supplier details...',
+                  hintText: 'shelf_location_hint'.tr(),
                 ),
               ),
               const SizedBox(height: 24),
@@ -109,12 +110,12 @@ class _AddEditStockState extends State<AddEditStock> {
                     elevation: 0,
                   ),
                   onPressed: () => Navigator.pop(context),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.save_outlined, color: Colors.white, size: 18),
-                      SizedBox(width: 8),
-                      Text('Save Changes', style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold)),
+                      const Icon(Icons.save_outlined, color: Colors.white, size: 18),
+                      const SizedBox(width: 8),
+                      Text('save_changes'.tr(), style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold)),
                     ],
                   ),
                 ),
@@ -125,12 +126,12 @@ class _AddEditStockState extends State<AddEditStock> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0xFFE2E8F0))),
-                child: const Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Inventory Integrity', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.primary)),
-                    SizedBox(height: 8),
-                    Text('Accurate stock levels help patients find their prescriptions faster. Ensure all records are verified before saving.', style: TextStyle(fontSize: 11, color: AppColors.textLight, height: 1.4)),
+                    Text('inventory_integrity'.tr(), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.primary)),
+                    const SizedBox(height: 8),
+                    Text('inventory_integrity_desc'.tr(), style: const TextStyle(fontSize: 11, color: AppColors.textLight, height: 1.4)),
                   ],
                 ),
               ),

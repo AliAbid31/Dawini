@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../core/constants/app_colors.dart';
 import 'search_results.dart';
 import '../core/api/api_client.dart';
@@ -44,7 +45,7 @@ class _MedicineDetailsState extends State<MedicineDetails> {
           icon: const Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Dawini', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18)),
+        title: Text('app_title'.tr(), style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18)),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_none, color: AppColors.textLight),
@@ -83,7 +84,7 @@ class _MedicineDetailsState extends State<MedicineDetails> {
                             child: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                               decoration: BoxDecoration(color: const Color(0xFFDCFCE7), borderRadius: BorderRadius.circular(8)),
-                              child: const Text('In Stock', style: TextStyle(color: Color(0xFF15803D), fontSize: 10, fontWeight: FontWeight.bold)),
+                              child: Text('in_stock'.tr(), style: TextStyle(color: Color(0xFF15803D), fontSize: 10, fontWeight: FontWeight.bold)),
                             ),
                           )
                         ],
@@ -122,7 +123,7 @@ class _MedicineDetailsState extends State<MedicineDetails> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('About this medicine', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+                          Text('about_medicine'.tr(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textDark)),
                           const SizedBox(height: 12),
                           const Text(
                             'Panadol provides fast, effective temporary relief of aches and pains, such as headache, migraine, sore throat and dental pain. It is also gentle on the stomach and helps reduce fever without causing irritation.',
@@ -159,12 +160,12 @@ class _MedicineDetailsState extends State<MedicineDetails> {
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const SearchResults()));
                   },
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.location_on, color: Colors.white, size: 18),
-                      SizedBox(width: 8),
-                      Text('Check Availability nearby', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white)),
+                      const Icon(Icons.location_on, color: Colors.white, size: 18),
+                      const SizedBox(width: 8),
+                      Text('check_availability_nearby'.tr(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white)),
                     ],
                   ),
                 ),

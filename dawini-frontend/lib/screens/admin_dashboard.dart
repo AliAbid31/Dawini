@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../core/constants/app_colors.dart';
 import 'login_screen.dart';
 
@@ -20,7 +21,7 @@ class AdminDashboard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Icon(Icons.menu, color: AppColors.textDark),
-                  const Text('Dawini', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.primary)),
+                  Text('app_title'.tr(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.primary)),
                   Row(
                     children: [
                       IconButton(icon: const Icon(Icons.notifications_none), onPressed: () {}),
@@ -31,9 +32,9 @@ class AdminDashboard extends StatelessWidget {
               ),
               const SizedBox(height: 24),
 
-              const Text('ADMINISTRATOR DASHBOARD', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.primary, letterSpacing: 1)),
+              Text('administrator_dashboard'.tr(), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.primary, letterSpacing: 1)),
               const SizedBox(height: 4),
-              const Text('Overview Metrics', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+              Text('overview_metrics'.tr(), style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.textDark)),
               const SizedBox(height: 20),
 
               // Statistiques Système
@@ -48,8 +49,8 @@ class AdminDashboard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Pharmacy Validations', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textDark)),
-                  TextButton(onPressed: () {}, child: const Text('View All', style: TextStyle(fontSize: 11, color: AppColors.primary, fontWeight: FontWeight.bold))),
+                  Text('pharmacy_validations'.tr(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+                  TextButton(onPressed: () {}, child: Text('view_all'.tr(), style: TextStyle(fontSize: 11, color: AppColors.primary, fontWeight: FontWeight.bold))),
                 ],
               ),
               const SizedBox(height: 8),
@@ -59,7 +60,7 @@ class AdminDashboard extends StatelessWidget {
               const SizedBox(height: 24),
 
               // Activité Récente Système
-              const Text('Recent Activity', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+              Text('recent_activity'.tr(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textDark)),
               const SizedBox(height: 16),
               Container(
                 padding: const EdgeInsets.all(16),
@@ -80,7 +81,7 @@ class AdminDashboard extends StatelessWidget {
               OutlinedButton(
                 style: OutlinedButton.styleFrom(side: const BorderSide(color: Color(0xFFE2E8F0)), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)), padding: const EdgeInsets.symmetric(vertical: 14)),
                 onPressed: () {},
-                child: const Text('Download Full System Log', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+                child: Text('download_log'.tr(), style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textDark)),
               ),
               const SizedBox(height: 24),
 
@@ -91,9 +92,9 @@ class AdminDashboard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Growth & Infrastructure', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+                    Text('growth_infrastructure'.tr(), style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textDark)),
                     const SizedBox(height: 6),
-                    const Text('Your network has expanded by 14% this month. System reliability is currently at 99.98% across all healthcare nodes.', style: TextStyle(fontSize: 11, color: AppColors.textMuted, height: 1.4)),
+                    Text('network_expanded'.tr(), style: TextStyle(fontSize: 11, color: AppColors.textMuted, height: 1.4)),
                     const SizedBox(height: 16),
                     Row(
                       children: [
@@ -115,7 +116,7 @@ class AdminDashboard extends StatelessWidget {
                   onPressed: () {
                     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const LoginScreen()), (route) => false);
                   },
-                  child: const Text('Logout Admin Session', style: TextStyle(color: Color(0xFFB91C1C), fontSize: 13, fontWeight: FontWeight.bold)),
+                  child: Text('logout_admin_session'.tr(), style: TextStyle(color: Color(0xFFB91C1C), fontSize: 13, fontWeight: FontWeight.bold)),
                 ),
               ),
               const SizedBox(height: 40),

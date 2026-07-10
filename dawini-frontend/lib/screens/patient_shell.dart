@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../core/constants/app_colors.dart';
 import 'user_home.dart';
 import 'medicine_search.dart';
@@ -45,10 +46,10 @@ class _PatientShellState extends State<PatientShell> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _buildNavItem(0, Icons.home_outlined, Icons.home, 'Home'),
-            _buildNavItem(1, Icons.search, Icons.search, 'Search'),
-            _buildNavItem(2, Icons.description_outlined, Icons.description, 'Requests'),
-            _buildNavItem(3, Icons.person_outline, Icons.person, 'Profile'),
+            _buildNavItem(0, Icons.home_outlined, Icons.home, 'home'.tr()),
+            _buildNavItem(1, Icons.search, Icons.search, 'search'.tr()),
+            _buildNavItem(2, Icons.description_outlined, Icons.description, 'requests'.tr()),
+            _buildNavItem(3, Icons.person_outline, Icons.person, 'profile'.tr()),
           ],
         ),
       ),

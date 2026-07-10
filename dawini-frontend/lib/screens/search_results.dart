@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../core/constants/app_colors.dart';
 import 'confirmation_request.dart';
 
@@ -16,7 +17,7 @@ class SearchResults extends StatelessWidget {
           icon: const Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Dawini', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18)),
+        title: Text('app_title'.tr(), style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18)),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_none, color: AppColors.textLight),
@@ -30,7 +31,7 @@ class SearchResults extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text('Results for', style: TextStyle(fontSize: 12, color: AppColors.textLight)),
+              Text('results_for'.tr(), style: TextStyle(fontSize: 12, color: AppColors.textLight)),
               const SizedBox(height: 4),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -45,21 +46,21 @@ class SearchResults extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(10)),
-                          child: const Row(
+                           child: Row(
                             children: [
                               Icon(Icons.list, color: Colors.white, size: 14),
                               SizedBox(width: 4),
-                              Text('List', style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
+                              Text('list'.tr(), style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
                             ],
                           ),
                         ),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          child: const Row(
+                           child: Row(
                             children: [
                               Icon(Icons.map_outlined, color: AppColors.textLight, size: 14),
                               SizedBox(width: 4),
-                              Text('Map', style: TextStyle(color: AppColors.textLight, fontSize: 11, fontWeight: FontWeight.bold)),
+                              Text('map'.tr(), style: TextStyle(color: AppColors.textLight, fontSize: 11, fontWeight: FontWeight.bold)),
                             ],
                           ),
                         ),
@@ -123,9 +124,9 @@ class SearchResults extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Need a faster delivery?', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                    Text('need_faster_delivery'.tr(), style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 8),
-                    const Text('Subscribe to Dawini Plus for free express delivery from any pharmacy.', style: TextStyle(color: Colors.white70, fontSize: 12, height: 1.4)),
+                    Text('subscribe_plus'.tr(), style: TextStyle(color: Colors.white70, fontSize: 12, height: 1.4)),
                     const SizedBox(height: 16),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -134,7 +135,7 @@ class SearchResults extends StatelessWidget {
                         elevation: 0,
                       ),
                       onPressed: () {},
-                      child: const Text('Get Started', style: TextStyle(color: Color(0xFF0284C7), fontWeight: FontWeight.bold, fontSize: 12)),
+                      child: Text('get_started'.tr(), style: TextStyle(color: Color(0xFF0284C7), fontWeight: FontWeight.bold, fontSize: 12)),
                     )
                   ],
                 ),

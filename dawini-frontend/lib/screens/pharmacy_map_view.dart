@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import '../core/constants/app_colors.dart';
@@ -26,7 +27,7 @@ class PharmacyMapView extends StatelessWidget {
           icon: const Icon(Icons.arrow_back, color: AppColors.textDark),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Nearby Pharmacies', style: TextStyle(color: AppColors.textDark, fontSize: 16, fontWeight: FontWeight.bold)),
+        title: Text('nearby_pharmacies_title'.tr(), style: TextStyle(color: AppColors.textDark, fontSize: 16, fontWeight: FontWeight.bold)),
       ),
       body: FlutterMap(
         options: MapOptions(

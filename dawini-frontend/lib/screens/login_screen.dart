@@ -40,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (user == null) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Login failed. Check your credentials.')),
+            SnackBar(content: Text('login_failed'.tr())),
           );
         }
         return;
@@ -104,11 +104,11 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Row(
+                Row(
                   children: [
                     Icon(Icons.local_hospital, color: AppColors.primary, size: 24),
                     SizedBox(width: 8),
-                    Text('Dawini', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primary)),
+                    Text('app_title'.tr(), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primary)),
                   ],
                 ),
                 const SizedBox(height: 40),
@@ -128,16 +128,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      const Text('Welcome Back', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.textDark), textAlign: TextAlign.center),
+                      Text('welcome_back'.tr(), style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.textDark), textAlign: TextAlign.center),
                       const SizedBox(height: 8),
-                      const Text('Access your health dashboard and prescriptions securely.', style: TextStyle(fontSize: 13, color: AppColors.textMuted), textAlign: TextAlign.center),
+                      Text('access_dashboard'.tr(), style: TextStyle(fontSize: 13, color: AppColors.textMuted), textAlign: TextAlign.center),
                       const SizedBox(height: 32),
-                      const Text('Email Address', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+                      Text('email_address'.tr(), style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.textDark)),
                       const SizedBox(height: 8),
                       TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
-                        validator: (value) => value == null || !value.contains('@') ? 'Enter a valid email' : null,
+                        validator: (value) => value == null || !value.contains('@') ? 'enter_valid_email'.tr() : null,
                         decoration: const InputDecoration(
                           hintText: 'name@example.com',
                           prefixIcon: Icon(Icons.mail_outline, color: AppColors.textLight, size: 20),
@@ -147,17 +147,17 @@ class _LoginScreenState extends State<LoginScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Password', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+                          Text('password'.tr(), style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.textDark)),
                           TextButton(
                             onPressed: () {},
-                            child: const Text('Forgot Password?', style: TextStyle(fontSize: 11, color: AppColors.primary, fontWeight: FontWeight.bold)),
+                            child: Text('forgot_password'.tr(), style: TextStyle(fontSize: 11, color: AppColors.primary, fontWeight: FontWeight.bold)),
                           )
                         ],
                       ),
                       TextFormField(
                         controller: _passwordController,
                         obscureText: _obscurePassword,
-                        validator: (value) => value == null || value.length < 6 ? 'Password must be at least 6 characters' : null,
+                        validator: (value) => value == null || value.length < 6 ? 'password_min_length'.tr() : null,
                         decoration: InputDecoration(
                           hintText: '••••••••',
                           prefixIcon: const Icon(Icons.lock_outline, color: AppColors.textLight, size: 20),
@@ -187,10 +187,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             elevation: 0,
                           ),
                           onPressed: _handleLogin,
-                          child: const Row(
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text('Login', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                              Text('login'.tr(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                               SizedBox(width: 8),
                               Icon(Icons.arrow_forward, color: Colors.white, size: 18),
                             ],
@@ -204,7 +204,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("Don't have an account? ", style: TextStyle(color: AppColors.textMuted, fontSize: 13)),
+                    Text("dont_have_account".tr(), style: TextStyle(color: AppColors.textMuted, fontSize: 13)),
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -212,8 +212,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           MaterialPageRoute(builder: (context) => const RoleSelectionScreen()),
                         );
                       },
-                      child: const Text(
-                        'Register Now',
+                      child: Text(
+                        'register_now'.tr(),
                         style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 13),
                       ),
                     ),

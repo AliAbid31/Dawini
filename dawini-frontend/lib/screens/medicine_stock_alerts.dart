@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../core/constants/app_colors.dart';
 
 class MedicineStockAlerts extends StatelessWidget {
@@ -12,7 +13,7 @@ class MedicineStockAlerts extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(icon: const Icon(Icons.arrow_back, color: AppColors.primary), onPressed: () {}),
-        title: const Text('Dawini', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18)),
+        title: Text('app_title'.tr(), style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18)),
         actions: [
           IconButton(icon: const Icon(Icons.notifications_none, color: AppColors.textLight), onPressed: () {}),
         ],
@@ -23,9 +24,9 @@ class MedicineStockAlerts extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text('Medicine Stock Alerts', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+              Text('medicine_stock_alerts_title'.tr(), style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.textDark)),
               const SizedBox(height: 4),
-              const Text('We\'ll notify you as soon as these medications are back in stock at your selected pharmacies.', style: TextStyle(fontSize: 12, color: AppColors.textLight, height: 1.4)),
+              Text('stock_alerts_desc'.tr(), style: TextStyle(fontSize: 12, color: AppColors.textLight, height: 1.4)),
               const SizedBox(height: 24),
 
               _alertCard(
@@ -64,11 +65,11 @@ class MedicineStockAlerts extends StatelessWidget {
                   children: [
                     const Icon(Icons.notification_add_outlined, color: AppColors.textLight, size: 28),
                     const SizedBox(height: 12),
-                    const Text('Need to track another medicine?', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+                    Text('need_track_medicine'.tr(), style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.textDark)),
                     const SizedBox(height: 4),
-                    const Text('Add a new alert from the search screen.', style: TextStyle(fontSize: 10, color: AppColors.textLight)),
+                    Text('add_new_alert_from_search'.tr(), style: TextStyle(fontSize: 10, color: AppColors.textLight)),
                     const SizedBox(height: 12),
-                    TextButton(onPressed: () {}, child: const Text('Search Medicines', style: TextStyle(fontSize: 11, color: AppColors.primary, fontWeight: FontWeight.bold))),
+                    TextButton(onPressed: () {}, child: Text('search_medicines_btn'.tr(), style: TextStyle(fontSize: 11, color: AppColors.primary, fontWeight: FontWeight.bold))),
                   ],
                 ),
               ),
@@ -136,7 +137,7 @@ class MedicineStockAlerts extends StatelessWidget {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), elevation: 0),
                     onPressed: () {},
-                    child: const Text('Request Availability', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white)),
+                    child: Text('request_availability_btn'.tr(), style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white)),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -144,7 +145,7 @@ class MedicineStockAlerts extends StatelessWidget {
                   child: OutlinedButton(
                     style: OutlinedButton.styleFrom(side: const BorderSide(color: Color(0xFFE2E8F0)), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
                     onPressed: () {},
-                    child: const Text('Get Directions', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+                    child: Text('get_directions'.tr(), style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textDark)),
                   ),
                 ),
               ],
@@ -156,11 +157,11 @@ class MedicineStockAlerts extends StatelessWidget {
                 Text(date, style: const TextStyle(fontSize: 10, color: AppColors.textLight)),
                 GestureDetector(
                   onTap: () {},
-                  child: const Row(
+                  child: Row(
                     children: [
-                      Icon(Icons.notifications_off_outlined, color: Color(0xFFB91C1C), size: 12),
-                      SizedBox(width: 2),
-                      Text('Cancel Alert', style: TextStyle(fontSize: 10, color: Color(0xFFB91C1C), fontWeight: FontWeight.bold)),
+                      const Icon(Icons.notifications_off_outlined, color: Color(0xFFB91C1C), size: 12),
+                      const SizedBox(width: 2),
+                      Text('cancel_alert'.tr(), style: const TextStyle(fontSize: 10, color: Color(0xFFB91C1C), fontWeight: FontWeight.bold)),
                     ],
                   ),
                 )

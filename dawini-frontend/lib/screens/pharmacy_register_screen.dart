@@ -106,15 +106,15 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
           context: context,
           barrierDismissible: false,
           builder: (ctx) => AlertDialog(
-            title: const Text('Registration Successful'),
-            content: const Text('Please check your email to verify your pharmacy account before logging in.'),
+              title: Text('registration_successful'.tr()),
+              content: Text('check_email_verify_pharmacy'.tr()),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.pop(ctx);
                   Navigator.popUntil(context, (route) => route.isFirst); // Go back to login
                 },
-                child: const Text('OK'),
+                child: Text('ok'.tr()),
               ),
             ],
           ),
@@ -149,7 +149,7 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
           icon: const Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Dawini', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18)),
+        title: Text('app_title'.tr(), style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18)),
         actions: [
           IconButton(
             icon: const Icon(Icons.backpack_outlined, color: AppColors.primary),
@@ -166,14 +166,14 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
               const SizedBox(height: 16),
-              const Text(
-                'Pharmacy Partner',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.primary),
+              Text(
+                'pharmacy_partner'.tr(),
+                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.primary),
               ),
               const SizedBox(height: 8),
-              const Text(
-                'Join our network of certified pharmacies and provide essential care to patients in your area.',
-                style: TextStyle(fontSize: 12, color: AppColors.textMuted, height: 1.4),
+              Text(
+                'pharmacy_partner_desc'.tr(),
+                style: const TextStyle(fontSize: 12, color: AppColors.textMuted, height: 1.4),
               ),
               const SizedBox(height: 24),
 
@@ -192,7 +192,7 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
                     ),
                   ),
                   const SizedBox(width: 12),
-                  const Text('1 of 2', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.primary))
+                  Text('1 ' + 'step_of'.tr() + ' 2', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.primary))
                 ],
               ),
               const SizedBox(height: 24),
@@ -214,32 +214,32 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     // Section Business Details
-                    _sectionTitle('Business Details'),
-                    _inputLabel('Responsible Pharmacist'),
+                    _sectionTitle('business_details'.tr()),
+                    _inputLabel('responsible_pharmacist'.tr()),
                     TextFormField(
                       controller: _ownerNameController,
-                      validator: (value) => value == null || value.isEmpty ? 'Required field' : null,
-                      decoration: const InputDecoration(
-                        hintText: 'Full Legal Name',
-                        prefixIcon: Icon(Icons.person_outline, size: 20, color: AppColors.textLight),
+                      validator: (value) => value == null || value.isEmpty ? 'required_field'.tr() : null,
+                      decoration: InputDecoration(
+                        hintText: 'full_legal_name'.tr(),
+                        prefixIcon: const Icon(Icons.person_outline, size: 20, color: AppColors.textLight),
                       ),
                     ),
                     const SizedBox(height: 16),
-                    _inputLabel('Pharmacy Name'),
+                    _inputLabel('pharmacy_name'.tr()),
                     TextFormField(
                       controller: _pharmacyNameController,
-                      validator: (value) => value == null || value.isEmpty ? 'Required field' : null,
-                      decoration: const InputDecoration(hintText: 'e.g. LifeCare Central Pharmacy', prefixIcon: Icon(Icons.storefront_outlined, size: 20, color: AppColors.textLight)),
+                      validator: (value) => value == null || value.isEmpty ? 'required_field'.tr() : null,
+                      decoration: InputDecoration(hintText: 'pharmacy_name_hint'.tr(), prefixIcon: const Icon(Icons.storefront_outlined, size: 20, color: AppColors.textLight)),
                     ),
                     const SizedBox(height: 16),
-                    _inputLabel('License Number'),
+                    _inputLabel('license_number'.tr()),
                     TextFormField(
                       controller: _licenseController,
-                      validator: (value) => value == null || value.isEmpty ? 'Required field' : null,
+                      validator: (value) => value == null || value.isEmpty ? 'required_field'.tr() : null,
                       decoration: const InputDecoration(hintText: 'PH-12345678', prefixIcon: Icon(Icons.card_membership_outlined, size: 20, color: AppColors.textLight)),
                     ),
                     const SizedBox(height: 16),
-                    _inputLabel('Phone Number'),
+                    _inputLabel('phone_number'.tr()),
                     Row(
                       children: [
                         GestureDetector(
@@ -273,7 +273,7 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
                           child: TextFormField(
                             controller: _phoneController,
                             keyboardType: TextInputType.phone,
-                            validator: (value) => value == null || value.isEmpty ? 'Required field' : null,
+                            validator: (value) => value == null || value.isEmpty ? 'required_field'.tr() : null,
                             decoration: const InputDecoration(
                               hintText: '000-0000',
                               prefixIcon: Icon(Icons.phone_outlined, size: 20, color: AppColors.textLight),
@@ -285,19 +285,19 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
                     const SizedBox(height: 24),
 
                     // Section Credentials
-                    _sectionTitle('Credentials'),
-                    _inputLabel('Professional Email'),
+                    _sectionTitle('credentials'.tr()),
+                    _inputLabel('professional_email'.tr()),
                     TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
-                      validator: (value) => value == null || !value.contains('@') ? 'Invalid email' : null,
-                      decoration: InputDecoration(hintText: 'pharmacy@example.com', prefixIcon: Icon(Icons.mail_outline, size: 20, color: AppColors.textLight)),
+                      validator: (value) => value == null || !value.contains('@') ? 'enter_valid_email'.tr() : null,
+                      decoration: const InputDecoration(hintText: 'pharmacy@example.com', prefixIcon: Icon(Icons.mail_outline, size: 20, color: AppColors.textLight)),
                     ),
                     const SizedBox(height: 16),
-                    _inputLabel('Secure Password'),
+                    _inputLabel('secure_password'.tr()),
                     TextFormField(
                       controller: _passwordController,
-                      validator: (value) => value == null || value.length < 6 ? 'Too short' : null,
+                      validator: (value) => value == null || value.length < 6 ? 'password_min_length'.tr() : null,
                       obscureText: _obscurePassword,
                       decoration: InputDecoration(
                         hintText: '••••••••',
@@ -311,7 +311,7 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
                     const SizedBox(height: 24),
 
                     // Section Map / Location Selector
-                    _sectionTitle('Location'),
+                    _sectionTitle('location'.tr()),
                     GestureDetector(
                       onTap: _openMapPicker,
                       child: Container(
@@ -356,7 +356,7 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
                                     ),
                                     const SizedBox(width: 6),
                                     Text(
-                                      _selectedLat != null ? 'Change Location' : 'Set Pharmacy Location',
+                                      _selectedLat != null ? 'change_location'.tr() : 'set_pharmacy_location'.tr(),
                                       style: const TextStyle(fontSize: 11, color: AppColors.textDark, fontWeight: FontWeight.bold),
                                     ),
                                     const SizedBox(width: 8),
@@ -364,7 +364,7 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
                                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                       decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(10)),
                                       child: Text(
-                                        _selectedLat != null ? 'Edit' : 'Select',
+                                        _selectedLat != null ? 'edit'.tr() : 'select'.tr(),
                                         style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold),
                                       ),
                                     )
@@ -382,7 +382,7 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
                                     color: Colors.orange,
                                     borderRadius: BorderRadius.circular(8),
                                   ),
-                                  child: const Text('REQUIRED', style: TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.bold)),
+                                  child: Text('required'.tr(), style: const TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.bold)),
                                 ),
                               ),
                           ],
@@ -396,7 +396,7 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
                       onTap: _openMapPicker,
                       validator: (value) => value == null || value.isEmpty ? 'Required field' : null,
                       decoration: InputDecoration(
-                        hintText: 'Tap to select pharmacy location on map',
+                        hintText: 'select_location_map_hint'.tr(),
                         prefixIcon: const Icon(Icons.location_city_outlined, color: AppColors.textLight, size: 20),
                         suffixIcon: IconButton(
                           icon: const Icon(Icons.open_in_new, color: AppColors.primary, size: 18),
@@ -422,19 +422,19 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
                                 height: 18,
                                 child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                               )
-                            : const Text('Continue Registration', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                            : Text('continue_registration'.tr(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                       ),
                     ),
                     const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text('Already have an account? ', style: TextStyle(color: AppColors.textMuted, fontSize: 12)),
+                        Text('already_account'.tr(), style: TextStyle(color: AppColors.textMuted, fontSize: 12)),
                         GestureDetector(
                           onTap: () {
                             Navigator.popUntil(context, (route) => route.isFirst);
                           },
-                          child: const Text('Log in', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 12)),
+                          child: Text('log_in'.tr(), style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 12)),
                         ),
                       ],
                     )
@@ -443,9 +443,9 @@ class _PharmacyRegisterScreenState extends State<PharmacyRegisterScreen> {
               ),
               const SizedBox(height: 32),
               const SizedBox(height: 24),
-              const Text(
-                'By joining Dawini, you agree to our Terms of Service and Privacy Policy.',
-                style: TextStyle(fontSize: 10, color: AppColors.textLight, height: 1.4),
+              Text(
+                'terms_agreement_text'.tr(),
+                style: const TextStyle(fontSize: 10, color: AppColors.textLight, height: 1.4),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 40),

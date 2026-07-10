@@ -185,11 +185,11 @@ class _PharmacyRequestsState extends State<PharmacyRequests> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Row(
+                Row(
                   children: [
                     Icon(Icons.link, size: 12, color: AppColors.textLight),
                     SizedBox(width: 4),
-                    Text('Medicine Requested', style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: AppColors.textLight)),
+                    Text('medicine_requested'.tr(), style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: AppColors.textLight)),
                   ],
                 ),
                 const SizedBox(height: 4),
@@ -223,12 +223,12 @@ class _PharmacyRequestsState extends State<PharmacyRequests> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(color: const Color(0xFFDCFCE7), borderRadius: BorderRadius.circular(8)),
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.check_circle_outline, size: 14, color: Color(0xFF15803D)),
                   SizedBox(width: 6),
-                  Text('Order sent to packaging unit', style: TextStyle(color: Color(0xFF15803D), fontSize: 10, fontWeight: FontWeight.bold)),
+                  Text('order_sent_packaging'.tr(), style: TextStyle(color: Color(0xFF15803D), fontSize: 10, fontWeight: FontWeight.bold)),
                 ],
               ),
             )

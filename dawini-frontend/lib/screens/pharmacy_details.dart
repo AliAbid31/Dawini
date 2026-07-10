@@ -46,14 +46,14 @@ class PharmacyDetails extends StatelessWidget {
                             decoration: BoxDecoration(color: const Color(0xFFE5F1FB), borderRadius: BorderRadius.circular(16)),
                             child: const Icon(Icons.local_pharmacy, color: AppColors.primary, size: 30),
                           ),
-                          const SizedBox(width: 16),
-                          const Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('HealthCare Central Pharmacy', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+                           const SizedBox(width: 16),
+                           Expanded(
+                             child: Column(
+                               crossAxisAlignment: CrossAxisAlignment.start,
+                               children: [
+                                 Text('central_pharmacy_sample'.tr(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textDark)),
                                 SizedBox(height: 4),
-                                Text('241 Nile Corniche, Maadi', style: TextStyle(fontSize: 11, color: AppColors.textLight)),
+                                Text('sample_address'.tr(), style: TextStyle(fontSize: 11, color: AppColors.textLight)),
                               ],
                             ),
                           ),
@@ -110,7 +110,7 @@ class PharmacyDetails extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('available_medicines'.tr(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textDark)),
-                        const Text('3 items found', style: TextStyle(fontSize: 11, color: AppColors.textLight)),
+                        Text('items_found'.tr(), style: TextStyle(fontSize: 11, color: AppColors.textLight)),
                       ],
                     ),
                     const SizedBox(height: 12),

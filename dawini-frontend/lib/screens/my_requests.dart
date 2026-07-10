@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../core/constants/app_colors.dart';
 
 class MyRequests extends StatefulWidget {
@@ -22,7 +23,7 @@ class _MyRequestsState extends State<MyRequests> {
           icon: const Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () {},
         ),
-        title: const Text('Dawini', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18)),
+        title: Text('app_title'.tr(), style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18)),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_none, color: AppColors.textLight),
@@ -36,9 +37,9 @@ class _MyRequestsState extends State<MyRequests> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('My Requests', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.textDark)),
+              Text('my_requests_title'.tr(), style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.textDark)),
               const SizedBox(height: 4),
-              const Text('Track your medication orders and pharmacy updates.', style: TextStyle(fontSize: 12, color: AppColors.textLight)),
+              Text('track_requests_desc'.tr(), style: TextStyle(fontSize: 12, color: AppColors.textLight)),
               const SizedBox(height: 20),
 
               // Segmented Control de tri
@@ -85,8 +86,8 @@ class _MyRequestsState extends State<MyRequests> {
                 actionText: 'Check Other Pharmacies',
               ),
               const SizedBox(height: 24),
-              const Center(
-                child: Text('End of recent history', style: TextStyle(fontSize: 11, color: AppColors.textLight)),
+              Center(
+                child: Text('end_recent_history'.tr(), style: TextStyle(fontSize: 11, color: AppColors.textLight)),
               ),
               const SizedBox(height: 20),
             ],
@@ -163,7 +164,7 @@ class _MyRequestsState extends State<MyRequests> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('PHARMACY ANSWER', style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: statusColor)),
+                      Text('pharmacy_answer'.tr().toUpperCase(), style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: statusColor)),
                       const SizedBox(height: 4),
                       Text(answer, style: const TextStyle(fontSize: 11, color: AppColors.textDark, height: 1.4)),
                     ],
